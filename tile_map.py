@@ -57,7 +57,7 @@ class TileMap():
 
                 if 0 <= x <= 320 and 0 <= y <= 240:
 
-                    if self.current_layer == None or layer == self.current_layer:
+                    if self.current_layer == None or int(layer) == int(self.current_layer):
                         display.blit(self.tiles[tile["type"]], (x, y))
                     else:
                         blit_alpha(display, self.tiles[tile["type"]], (x,y), 128)
