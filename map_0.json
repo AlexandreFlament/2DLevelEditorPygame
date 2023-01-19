@@ -1,0 +1,101 @@
+{
+    "map": {
+        "0": {
+            "1;0": {
+                "type": "dirt_box_herbe_gauche",
+                "pos": [
+                    1,
+                    0
+                ],
+                "layer": 0
+            },
+            "2;0": {
+                "type": "dirt_box",
+                "pos": [
+                    2,
+                    0
+                ],
+                "layer": 0
+            },
+            "3;0": {
+                "type": "dirt_box",
+                "pos": [
+                    3,
+                    0
+                ],
+                "layer": 0
+            },
+            "4;0": {
+                "type": "dirt_box_herbe_droite",
+                "pos": [
+                    4,
+                    0
+                ],
+                "layer": 0
+            },
+            "4;4": {
+                "type": "dirt_box_herbe_droite_gauche",
+                "pos": [
+                    4,
+                    4
+                ],
+                "layer": 0
+            }
+        },
+        "-1": {
+            "0;1": {
+                "type": "dirt_box",
+                "pos": [
+                    0,
+                    1
+                ],
+                "layer": -1
+            },
+            "1;1": {
+                "type": "dirt_box_full_petit_herbe_gauche",
+                "pos": [
+                    1,
+                    1
+                ],
+                "layer": -1
+            },
+            "1;2": {
+                "type": "dirt_box_full",
+                "pos": [
+                    1,
+                    2
+                ],
+                "layer": -1
+            }
+        },
+        "1": {
+            "0;5": {
+                "type": "dirt_box_herbe_gauche",
+                "pos": [
+                    0,
+                    5
+                ],
+                "layer": -1
+            },
+            "1;5": {
+                "type": "dirt_box_herbe_droite",
+                "pos": [
+                    1,
+                    5
+                ],
+                "layer": -1
+            }
+        }
+    },
+    "all_layers": {
+        "-1": {
+            "layerspeed": 0.5
+        },
+        "0": {
+            "layerspeed": 1
+        },
+        "1": {
+            "layerspeed": 1.5
+        }
+    }
+}
