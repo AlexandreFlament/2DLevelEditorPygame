@@ -7,15 +7,15 @@ class Editor(TileMap):
         super().__init__(tile_size, tiles_file)
 
         self.levelmap = pygame.Surface((380, 220))
-        self.editormap = pygame.Surface((480, 280))
+        self.editormap = pygame.image.load("editor.png")
 
         self.selectedblock = None
         self.current_layer = 0
         self.camerapos = [0,0]
     
     def draw_editor(self):
+        self.levelmap.fill((0,0,0))
         self.draw_map(self.levelmap, tuple(self.camerapos))
-        pygame.draw.rect(self.editormap, (255,255,255), self.editormap.get_rect())
         self.editormap.blit(self.levelmap, (60, 0))
     
     def movecamera(self, mov):

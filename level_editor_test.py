@@ -4,9 +4,6 @@ from pygame.locals import *
 
 def main():
 
-    with open("config.json", "r") as f:
-        config = json.load(f)
-
     #Music
     pygame.mixer.pre_init(44100, -16, 2, 4096)
     pygame.init()
@@ -66,6 +63,7 @@ def main():
         if keys["up"]:
             playerpos[1]+=1
         
+        ed.movecamera(keys)
         ed.draw_editor()
             
         screen.blit(pygame.transform.scale(ed.editormap, pygame.display.get_window_size()), (0,0))
