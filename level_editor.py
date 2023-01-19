@@ -48,6 +48,11 @@ class Editor(TileMap):
             pygame.draw.rect(self.editormap, (255,255,255), self.blocks_interactables[self.current_page][pos][2])
             self.editormap.blit(self.blocks_interactables[self.current_page][pos][1], self.blocks_interactables[self.current_page][pos][2].topleft)
     
+    def change_page(self):
+        mousepos = pygame.mouse.get_pos()
+        if pygame.mouse.get_pressed[0]:
+            pass
+
     def movecamera(self, mov):
         if mov["left"]:
             self.camerapos[0]+=1
