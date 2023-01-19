@@ -45,7 +45,7 @@ class Editor(TileMap):
         self.editormap.blit(self.levelmap, (60, 0))
 
         for pos in self.blocks_interactables[self.current_page]:
-            pygame.draw.rect(self.editormap, (255,0,255), self.blocks_interactables[self.current_page][pos][2])
+            pygame.draw.rect(self.editormap, (255,255,255), self.blocks_interactables[self.current_page][pos][2])
             self.editormap.blit(self.blocks_interactables[self.current_page][pos][1], self.blocks_interactables[self.current_page][pos][2].topleft)
     
     def movecamera(self, mov):
