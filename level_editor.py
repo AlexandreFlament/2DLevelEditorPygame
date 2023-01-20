@@ -12,6 +12,7 @@ class Editor(TileMap):
         self.selectedblock = None
         self.current_layer = 0
         self.current_page = "0"
+        self.all_pages = []
         self.camerapos = [0,0]
 
         self.add_layer_rect = pygame.Rect(145, 231, 13, 12)
@@ -28,6 +29,7 @@ class Editor(TileMap):
 
             if str(page) not in self.blocks_interactables:
                 self.blocks_interactables[str(page)] = {}
+                self.all_pages.append[str(page)]
 
             rect = self.tiles[tile].get_rect()
             rect.topleft = (8 + 17 * x, 44 + 15 * y)
@@ -48,10 +50,22 @@ class Editor(TileMap):
             pygame.draw.rect(self.editormap, (255,255,255), self.blocks_interactables[self.current_page][pos][2])
             self.editormap.blit(self.blocks_interactables[self.current_page][pos][1], self.blocks_interactables[self.current_page][pos][2].topleft)
     
+    def block_collide(self, mousepos):
+        current_blocks = [self.blocks_interactables[self.current_page][2] for coord in self.blocks_interactables[self.current_page] ]
+        mouserect = pygame.Rect(mousepos[0], mousepos[1], 1,1)
+        print(pygame.Rect.collidelistall(mousepos, current_blocks))
+
     def change_page(self):
         mousepos = pygame.mouse.get_pos()
-        if pygame.mouse.get_pressed[0]:
-            pass
+
+        right_arrow_rect = pygame.Rect(38, 22, 17, 17)
+        left_arrow_rect = pygame.Rect(5, 24, 17, 17)
+        pygame.draw.rect(self.editormap, (255,0,255), right_arrow_rect)
+        pygame.draw.rect(self.editormap, (255,0,255), left_arrow_rect)
+
+        if pygame.mouse.get_pressed[0] and right_arrow_rect.collidepoint(mousepos):
+            self.all_pages = self.all_pages[1:] + [self.all_pages[0]]
+            self.current_page = self.all_pages[0]
 
     def movecamera(self, mov):
         if mov["left"]:

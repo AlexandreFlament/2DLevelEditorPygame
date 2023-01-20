@@ -64,6 +64,7 @@ def main():
             playerpos[1]+=1
         
         ed.movecamera(keys)
+        ed.change_page()
         ed.draw_editor()
             
         screen.blit(pygame.transform.scale(ed.editormap, pygame.display.get_window_size()), (0,0))
