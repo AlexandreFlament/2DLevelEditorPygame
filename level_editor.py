@@ -29,16 +29,23 @@ class Editor(TileMap):
 
             if str(page) not in self.blocks_interactables:
                 self.blocks_interactables[str(page)] = {}
-                self.all_pages.append[str(page)]
+                self.all_pages.append(str(page))
 
             rect = self.tiles[tile].get_rect()
             rect.topleft = (8 + 17 * x, 44 + 15 * y)
             self.blocks_interactables[str(page)][str(8 + 17 * x)+";"+str(44 + 15 * y)] = [tile, self.tiles[tile], rect]
-            if x != 2:
-                x += 1
-            else:
+            
+            if x == 2:
                 x = 0
-                y +=1
+                y += 1
+            else:
+                x += 1
+            if y == 12:
+                y = 0
+                page += 1
+                self.all_pages.append(str(page))
+            
+            
 
 
     def draw_editor(self):
@@ -48,23 +55,29 @@ class Editor(TileMap):
 
         for pos in self.blocks_interactables[self.current_page]:
             pygame.draw.rect(self.editormap, (255,255,255), self.blocks_interactables[self.current_page][pos][2])
-            self.editormap.blit(self.blocks_interactables[self.current_page][pos][1], self.blocks_interactables[self.current_page][pos][2].topleft)
+            self.editormap.blit(self.blocks_interactables[self.current_page][pos][1], self.blocks_interactables[self.current_page][pos][2])
     
     def block_collide(self, mousepos):
         current_blocks = [self.blocks_interactables[self.current_page][2] for coord in self.blocks_interactables[self.current_page] ]
         mouserect = pygame.Rect(mousepos[0], mousepos[1], 1,1)
         print(pygame.Rect.collidelistall(mousepos, current_blocks))
 
-    def change_page(self):
+    def change_page(self, screen_size):  # put after display scaling
         mousepos = pygame.mouse.get_pos()
+        mouseaction = pygame.mouse.get_pressed()
 
-        right_arrow_rect = pygame.Rect(38, 22, 17, 17)
-        left_arrow_rect = pygame.Rect(5, 24, 17, 17)
-        pygame.draw.rect(self.editormap, (255,0,255), right_arrow_rect)
-        pygame.draw.rect(self.editormap, (255,0,255), left_arrow_rect)
+        right_arrow_rect = pygame.Rect(38, 22, 17, 17).inflate(screen_size[0]/320, screen_size[1]/240)
+        left_arrow_rect = pygame.Rect(5, 22, 17, 17).inflate(screen_size[0]/320, screen_size[1]/240)
 
-        if pygame.mouse.get_pressed[0] and right_arrow_rect.collidepoint(mousepos):
+
+        print(mouseaction[0], left_arrow_rect.collidepoint(mousepos), right_arrow_rect.collidepoint(mousepos), mousepos)
+
+        if mouseaction[0] and right_arrow_rect.collidepoint(mousepos):
             self.all_pages = self.all_pages[1:] + [self.all_pages[0]]
+            self.current_page = self.all_pages[0]
+
+        if mouseaction[0] and left_arrow_rect.collidepoint(mousepos):
+            self.all_pages = [self.all_pages[-1]] + self.all_pages[:-1]
             self.current_page = self.all_pages[0]
 
     def movecamera(self, mov):
