@@ -31,10 +31,21 @@ class Editor(TileMap):
                 self.blocks_interactables[str(page)] = {}
                 self.all_pages.append(str(page))
 
-            rect = self.tiles[tile].get_rect()
-            rect.topleft = (8 + 17 * x, 44 + 15 * y)
+            if 0 <= y <= 5:
+                rect = self.tiles[tile].get_rect()
+                rect.topleft = (8 + 17 * x, 44 + 15 * y)
+            elif 6 <= y <= 7:
+                rect = self.tiles[tile].get_rect()
+                rect.topleft = (8 + 17 * x, 44 + 15 * y-1)
+            elif 8 <= y <= 9:
+                rect = self.tiles[tile].get_rect()
+                rect.topleft = (8 + 17 * x, 44 + 15 * y-2)
+            elif 10 <= y <= 11:
+                rect = self.tiles[tile].get_rect()
+                rect.topleft = (8 + 17 * x, 44 + 15 * y-3)
+
             self.blocks_interactables[str(page)][str(8 + 17 * x)+";"+str(44 + 15 * y)] = [tile, self.tiles[tile], rect]
-            
+
             if x == 2:
                 x = 0
                 y += 1
