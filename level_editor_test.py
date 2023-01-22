@@ -15,7 +15,7 @@ def main():
     #screen = pygame.display.set_mode((320, 240))
     pygame.display.set_caption('The game')
 
-    display = pygame.Surface((320, 240))    
+    display = pygame.Surface((480, 280))    
 
     clock = pygame.time.Clock()
     playerpos = [0,0]
@@ -66,17 +66,8 @@ def main():
         ed.movecamera(keys)
         ed.change_page(pygame.display.get_window_size())
         ed.draw_editor()
-        
-        winsize = pygame.display.get_window_size()
-
-        right_arrow_rect = pygame.Rect(38 * winsize[0]/320, 22 * winsize[1]/240, 17 * winsize[0]/320, 17 * winsize[1]/240)
-        left_arrow_rect = pygame.Rect(5 * winsize[0]/320, 22 * winsize[1]/240, 17 * winsize[0]/320, 17 * winsize[1]/240)
 
         screen.blit(pygame.transform.scale(ed.editormap, pygame.display.get_window_size()), (0,0))
-        
-        pygame.draw.rect(screen, (255,0,255), right_arrow_rect)
-        pygame.draw.rect(screen, (255,0,255), left_arrow_rect)
-
         pygame.display.update()
         clock.tick(10)
 

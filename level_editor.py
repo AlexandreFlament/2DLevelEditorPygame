@@ -44,11 +44,11 @@ class Editor(TileMap):
                 y = 0
                 page += 1
                 self.all_pages.append(str(page))
-            
-            
-
 
     def draw_editor(self):
+        
+        self.editormap = pygame.image.load("editor.png")
+
         self.levelmap.fill((0,0,0))
         self.draw_map(self.levelmap, tuple(self.camerapos))
         self.editormap.blit(self.levelmap, (60, 0))
@@ -57,20 +57,27 @@ class Editor(TileMap):
             pygame.draw.rect(self.editormap, (255,255,255), self.blocks_interactables[self.current_page][pos][2])
             self.editormap.blit(self.blocks_interactables[self.current_page][pos][1], self.blocks_interactables[self.current_page][pos][2])
     
-    def block_collide(self, mousepos):
-        current_blocks = [self.blocks_interactables[self.current_page][2] for coord in self.blocks_interactables[self.current_page] ]
+    def block_collide(self, mousepos, screen_size):
+        # mousepos scaling
+        ratio_x = (screen_size[0] - 1) / 480
+        ratio_y = (screen_size[1] - 1) / 280
+        mousepos = (mousepos[0] / ratio_x, mousepos[1] / ratio_y)
+
+        current_blocks = [self.blocks_interactables[self.current_page][pos][2] for pos in self.blocks_interactables[self.current_page]]
         mouserect = pygame.Rect(mousepos[0], mousepos[1], 1,1)
         print(pygame.Rect.collidelistall(mousepos, current_blocks))
 
     def change_page(self, screen_size):  # put after display scaling
-        mousepos = pygame.mouse.get_pos()
+        mousepos = list(pygame.mouse.get_pos())
         mouseaction = pygame.mouse.get_pressed()
 
-        right_arrow_rect = pygame.Rect(38, 22, 17, 17).inflate(screen_size[0]/320, screen_size[1]/240)
-        left_arrow_rect = pygame.Rect(5, 22, 17, 17).inflate(screen_size[0]/320, screen_size[1]/240)
+        # mousepos scaling
+        ratio_x = (screen_size[0] - 1) / 480
+        ratio_y = (screen_size[1] - 1) / 280
+        mousepos = (mousepos[0] / ratio_x, mousepos[1] / ratio_y)
 
-
-        print(mouseaction[0], left_arrow_rect.collidepoint(mousepos), right_arrow_rect.collidepoint(mousepos), mousepos)
+        left_arrow_rect = pygame.Rect(5, 22, 17, 17)
+        right_arrow_rect = pygame.Rect(38, 22, 17, 17)
 
         if mouseaction[0] and right_arrow_rect.collidepoint(mousepos):
             self.all_pages = self.all_pages[1:] + [self.all_pages[0]]
