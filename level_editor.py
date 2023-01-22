@@ -77,7 +77,7 @@ class Editor(TileMap):
         mouserect = pygame.Rect(mousepos[0], mousepos[1], 1,1)
         print(pygame.Rect.collidelistall(mousepos, current_blocks))
 
-    def change_page(self, screen_size):  # put after display scaling
+    def change_page(self, screen_size):
         mousepos = list(pygame.mouse.get_pos())
         mouseaction = pygame.mouse.get_pressed()
 
