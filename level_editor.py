@@ -69,7 +69,6 @@ class Editor(TileMap):
             self.editormap.blit(self.blocks_interactables[self.current_page][pos][1], self.blocks_interactables[self.current_page][pos][2])
     
     def block_collide(self, mousepos, screen_size):
-        # mousepos scaling
         ratio_x = (screen_size[0] - 1) / 480
         ratio_y = (screen_size[1] - 1) / 280
         mousepos = (mousepos[0] / ratio_x, mousepos[1] / ratio_y)
@@ -82,7 +81,6 @@ class Editor(TileMap):
         mousepos = list(pygame.mouse.get_pos())
         mouseaction = pygame.mouse.get_pressed()
 
-        # mousepos scaling
         ratio_x = (screen_size[0] - 1) / 480
         ratio_y = (screen_size[1] - 1) / 280
         mousepos = (mousepos[0] / ratio_x, mousepos[1] / ratio_y)
