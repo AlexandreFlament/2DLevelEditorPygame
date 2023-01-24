@@ -14,7 +14,7 @@ class TileMap():
     def __init__(self, tile_size, tiles_file):
 
         self.tile_size = tile_size
-        self.nbr_x_tiles = 320/self.tile_size
+        self.nbr_x_tiles = 380/self.tile_size
         self.nbr_y_tiles = 240/self.tile_size
         self.tiles_file = tiles_file
 
@@ -55,7 +55,7 @@ class TileMap():
                 x = (tile["pos"][0] - playerpos[0]) * self.tile_size * self.all_layers[layer]["layerspeed"] + addedlayerspeedx
                 y = (tile["pos"][1] - playerpos[1]) * self.tile_size * self.all_layers[layer]["layerspeed"] + addedlayerspeedy
 
-                if 0 <= x <= 320 and 0 <= y <= 240:
+                if 0 <= x <= 380 and 0 <= y <= 240:
 
                     if self.current_layer == None or int(layer) == int(self.current_layer):
                         display.blit(self.tiles[tile["type"]], (x, y))
