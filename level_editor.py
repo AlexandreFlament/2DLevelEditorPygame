@@ -2,6 +2,13 @@ import pygame
 from tile_map import TileMap
 
 
+def scale_mouse_pos(screen_size):
+    mousepos = list(pygame.mouse.get_pos())
+    ratio_x = (screen_size[0] - 1) / 480
+    ratio_y = (screen_size[1] - 1) / 280
+    return mousepos[0] / ratio_x, mousepos[1] / ratio_y
+
+
 class Editor(TileMap):
     def __init__(self, tile_size, tiles_file):
         super().__init__(tile_size, tiles_file)
@@ -68,6 +75,8 @@ class Editor(TileMap):
         for pos in self.blocks_interactables[self.current_page]:
             pygame.draw.rect(self.editormap, (255,255,255), self.blocks_interactables[self.current_page][pos][2])
             self.editormap.blit(self.blocks_interactables[self.current_page][pos][1], self.blocks_interactables[self.current_page][pos][2])
+        
+        self.draw_layers()
     
     '''def block_collide(self, mousepos, screen_size):
         ratio_x = (screen_size[0] - 1) / 480
@@ -78,12 +87,8 @@ class Editor(TileMap):
         mouserect = pygame.Rect(mousepos[0], mousepos[1], 1,1)'''
 
     def change_page(self, screen_size):
-        mousepos = list(pygame.mouse.get_pos())
         mouseaction = pygame.mouse.get_pressed()
-
-        ratio_x = (screen_size[0] - 1) / 480
-        ratio_y = (screen_size[1] - 1) / 280
-        mousepos = (mousepos[0] / ratio_x, mousepos[1] / ratio_y)
+        mousepos = scale_mouse_pos(screen_size)
 
         left_arrow_rect = pygame.Rect(5, 22, 17, 17)
         right_arrow_rect = pygame.Rect(38, 22, 17, 17)
@@ -97,27 +102,19 @@ class Editor(TileMap):
             self.current_page = self.all_pages[0]
 
     def select_block(self, screen_size):
-        mousepos = list(pygame.mouse.get_pos())
         mouseaction = pygame.mouse.get_pressed()
+        mousepos = scale_mouse_pos(screen_size)
 
-        ratio_x = (screen_size[0] - 1) / 480
-        ratio_y = (screen_size[1] - 1) / 280
-        mousepos = (mousepos[0] / ratio_x, mousepos[1] / ratio_y)
-
-        if mouseaction[0] and (6 <= mousepos[0] <= 54 and 41 <= mousepos[1] <= 218): #x:6 y:41  x2:53 y2:218
+        if mouseaction[0] and (6 <= mousepos[0] <= 54 and 41 <= mousepos[1] <= 218): 
             selected_block = None
             for pos in self.blocks_interactables[self.current_page]:
                 if self.blocks_interactables[self.current_page][pos][2].collidepoint(mousepos):
                     selected_block = self.blocks_interactables[self.current_page][pos][1]
             
-            self.selected_block = selected_block                
+            self.selected_block = selected_block         
     
     def mouse_block_interaction(self, screen_size):
-        mousepos = list(pygame.mouse.get_pos())
-
-        ratio_x = (screen_size[0] - 1) / 480
-        ratio_y = (screen_size[1] - 1) / 280
-        mousepos = (mousepos[0] / ratio_x, mousepos[1] / ratio_y)
+        mousepos = scale_mouse_pos(screen_size)
 
         if 60 <= mousepos[0] <= 440 and 0 <= mousepos[1] <= 220:
             if self.selected_block != None:
@@ -133,8 +130,46 @@ class Editor(TileMap):
         if mov["up"]:
             self.camerapos[1]+=1
 
+    def draw_layers(self):
+        c = 0
+        for layer in sorted(self.all_layers):             
+
+            self.editormap.blit(pygame.image.load("Assets\Layer.png"), (445, 22 + 12*c))
+            
+            if c%2 == 0:
+                if int(layer) < 0:
+                    self.editormap.blit(pygame.image.load(f"Assets\{str(layer)[0]}.png"), (467, 27 + 12*c))
+                    self.editormap.blit(pygame.image.load(f"Assets\{str(layer)[1]}.png"), (470 - c, 22 + 12*c))
+                else:
+                    self.editormap.blit(pygame.image.load(f"Assets\{str(layer)}.png"), (472 - c, 22 + 12*c))
+                c+=1
+            else:
+                if int(layer) < 0:
+                    self.editormap.blit(pygame.image.load(f"Assets\{str(layer)[0]}.png"), (467, 27 + 12*c))
+                    self.editormap.blit(pygame.image.load(f"Assets\{str(layer)[1]}.png"), (471 - c, 22 + 12*c))
+                else:
+                    self.editormap.blit(pygame.image.load(f"Assets\{str(layer)}.png"), (473 - c, 22 + 12*c))
+                c+=1
+
+            if str(layer) == str(self.current_layer):
+                line = pygame.rect.Rect(443, 22+12*c-1-12,1,12)
+                pygame.draw.rect(self.editormap, (255,215,0), line)
+    
+    def select_layer(self, screen_size):
+        mouseaction = pygame.mouse.get_pressed()
+        mousepos = scale_mouse_pos(screen_size)
+
+        if mouseaction[0] == 1:
+            for layerpos in range(len(self.all_layers)):
+                if 443 <= mousepos[0] <= 479 and 22 + 12*layerpos <= mousepos[1] <= 21 + 12*layerpos + 11:
+                    self.current_layer = sorted(list(self.all_layers.keys()))[layerpos]
+    
     def update(self, keys, window_size):
         self.movecamera(keys)
         self.change_page(window_size)
         self.select_block(window_size)
+        self.select_layer(window_size)
         self.draw_editor(window_size)
+
+# 60 0
+# 440 220
