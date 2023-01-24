@@ -21,6 +21,7 @@ class Editor(TileMap):
         self.set_layer_speed_rect = pygame.Rect(254, 231, 13, 12)
         
         self.blocks_interactables = {}
+        self.selected_block = None
 
         x=0
         y=0
@@ -44,7 +45,7 @@ class Editor(TileMap):
                 rect = self.tiles[tile].get_rect()
                 rect.topleft = (8 + 17 * x, 44 + 15 * y-3)
 
-            self.blocks_interactables[str(page)][str(8 + 17 * x)+";"+str(44 + 15 * y)] = [tile, self.tiles[tile], rect]
+            self.blocks_interactables[str(page)][str(x)+";"+str(y)] = [tile, self.tiles[tile], rect]
 
             if x == 2:
                 x = 0
@@ -56,26 +57,25 @@ class Editor(TileMap):
                 page += 1
                 self.all_pages.append(str(page))
 
-    def draw_editor(self):
-        
+    def draw_editor(self, window_size):
         self.editormap = pygame.image.load("editor.png")
 
         self.levelmap.fill((0,0,0))
         self.draw_map(self.levelmap, tuple(self.camerapos))
         self.editormap.blit(self.levelmap, (60, 0))
+        self.mouse_block_interaction(window_size)
 
         for pos in self.blocks_interactables[self.current_page]:
             pygame.draw.rect(self.editormap, (255,255,255), self.blocks_interactables[self.current_page][pos][2])
             self.editormap.blit(self.blocks_interactables[self.current_page][pos][1], self.blocks_interactables[self.current_page][pos][2])
     
-    def block_collide(self, mousepos, screen_size):
+    '''def block_collide(self, mousepos, screen_size):
         ratio_x = (screen_size[0] - 1) / 480
         ratio_y = (screen_size[1] - 1) / 280
         mousepos = (mousepos[0] / ratio_x, mousepos[1] / ratio_y)
 
         current_blocks = [self.blocks_interactables[self.current_page][pos][2] for pos in self.blocks_interactables[self.current_page]]
-        mouserect = pygame.Rect(mousepos[0], mousepos[1], 1,1)
-        print(pygame.Rect.collidelistall(mousepos, current_blocks))
+        mouserect = pygame.Rect(mousepos[0], mousepos[1], 1,1)'''
 
     def change_page(self, screen_size):
         mousepos = list(pygame.mouse.get_pos())
@@ -96,6 +96,33 @@ class Editor(TileMap):
             self.all_pages = [self.all_pages[-1]] + self.all_pages[:-1]
             self.current_page = self.all_pages[0]
 
+    def select_block(self, screen_size):
+        mousepos = list(pygame.mouse.get_pos())
+        mouseaction = pygame.mouse.get_pressed()
+
+        ratio_x = (screen_size[0] - 1) / 480
+        ratio_y = (screen_size[1] - 1) / 280
+        mousepos = (mousepos[0] / ratio_x, mousepos[1] / ratio_y)
+
+        if mouseaction[0] and (6 <= mousepos[0] <= 54 and 41 <= mousepos[1] <= 218): #x:6 y:41  x2:53 y2:218
+            selected_block = None
+            for pos in self.blocks_interactables[self.current_page]:
+                if self.blocks_interactables[self.current_page][pos][2].collidepoint(mousepos):
+                    selected_block = self.blocks_interactables[self.current_page][pos][1]
+            
+            self.selected_block = selected_block                
+    
+    def mouse_block_interaction(self, screen_size):
+        mousepos = list(pygame.mouse.get_pos())
+
+        ratio_x = (screen_size[0] - 1) / 480
+        ratio_y = (screen_size[1] - 1) / 280
+        mousepos = (mousepos[0] / ratio_x, mousepos[1] / ratio_y)
+
+        if 60 <= mousepos[0] <= 440 and 0 <= mousepos[1] <= 220:
+            if self.selected_block != None:
+                self.editormap.blit(self.selected_block, mousepos)
+
     def movecamera(self, mov):
         if mov["left"]:
             self.camerapos[0]+=1
@@ -105,3 +132,9 @@ class Editor(TileMap):
             self.camerapos[1]-=1
         if mov["up"]:
             self.camerapos[1]+=1
+
+    def update(self, keys, window_size):
+        self.movecamera(keys)
+        self.change_page(window_size)
+        self.select_block(window_size)
+        self.draw_editor(window_size)
