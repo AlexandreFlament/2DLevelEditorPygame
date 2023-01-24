@@ -85,9 +85,22 @@
                 ],
                 "layer": -1
             }
+        },
+        "-4": {
+            "10;5": {
+                "type": "dirt_box_herbe_droite",
+                "pos": [
+                    10,
+                    5
+                ],
+                "layer": -4
+            }
         }
     },
     "all_layers": {
+        "-4": {
+            "layerspeed": 1
+        },
         "-1": {
             "layerspeed": 0.5
         },
