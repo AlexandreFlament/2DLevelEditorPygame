@@ -62,10 +62,8 @@ def main():
             playerpos[1]-=1
         if keys["up"]:
             playerpos[1]+=1
-        
-        ed.movecamera(keys)
-        ed.change_page(pygame.display.get_window_size())
-        ed.draw_editor()
+
+        ed.update(keys, pygame.display.get_window_size())
 
         screen.blit(pygame.transform.scale(ed.editormap, pygame.display.get_window_size()), (0,0))
         pygame.display.update()
