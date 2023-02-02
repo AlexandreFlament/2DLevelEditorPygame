@@ -118,17 +118,17 @@ class Editor(TileMap):
 
         if 60 <= mousepos[0] <= 440 and 0 <= mousepos[1] <= 220:
             if self.selected_block != None:
-                self.editormap.blit(self.selected_block, mousepos)
+                self.editormap.blit(self.selected_block, (mousepos[0] - mousepos[0] % self.tile_size, mousepos[1] - mousepos[1] % self.tile_size))
 
     def movecamera(self, mov):
         if mov["left"]:
-            self.camerapos[0]+=1
+            self.camerapos[0] += 1 / self.all_layers[str(self.current_layer)]["layerspeed"]
         if mov["right"]:
-            self.camerapos[0]-=1
+            self.camerapos[0] -= 1 / self.all_layers[str(self.current_layer)]["layerspeed"]
         if mov["down"]:
-            self.camerapos[1]-=1
+            self.camerapos[1] -= 1 / self.all_layers[str(self.current_layer)]["layerspeed"]
         if mov["up"]:
-            self.camerapos[1]+=1
+            self.camerapos[1] += 1 / self.all_layers[str(self.current_layer)]["layerspeed"]
 
     def draw_layers(self):
         c = 0
