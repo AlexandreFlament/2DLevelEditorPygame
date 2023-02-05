@@ -19,6 +19,7 @@ class Editor(TileMap):
         self.selectedblock = None
         self.current_layer = 0
         self.current_page = "0"
+        self.current_category = "Tiles"
         self.all_pages = []
         self.camerapos = [0,0]
 
@@ -72,9 +73,10 @@ class Editor(TileMap):
         self.editormap.blit(self.levelmap, (60, 0))
         self.mouse_block_interaction(window_size)
 
-        for pos in self.blocks_interactables[self.current_page]:
-            pygame.draw.rect(self.editormap, (255,255,255), self.blocks_interactables[self.current_page][pos][2])
-            self.editormap.blit(self.blocks_interactables[self.current_page][pos][1], self.blocks_interactables[self.current_page][pos][2])
+        if self.current_category == "Tiles":
+            for pos in self.blocks_interactables[self.current_page]:
+                pygame.draw.rect(self.editormap, (255,255,255), self.blocks_interactables[self.current_page][pos][2])
+                self.editormap.blit(self.blocks_interactables[self.current_page][pos][1], self.blocks_interactables[self.current_page][pos][2])
         
         self.draw_layers()
     
@@ -86,7 +88,7 @@ class Editor(TileMap):
         current_blocks = [self.blocks_interactables[self.current_page][pos][2] for pos in self.blocks_interactables[self.current_page]]
         mouserect = pygame.Rect(mousepos[0], mousepos[1], 1,1)'''
 
-    def change_page(self, screen_size):
+    def change_block_page(self, screen_size):
         mouseaction = pygame.mouse.get_pressed()
         mousepos = scale_mouse_pos(screen_size)
 
@@ -187,8 +189,9 @@ class Editor(TileMap):
     
     def update(self, keys, window_size):
         self.movecamera(keys)
-        self.change_page(window_size)
-        self.select_block(window_size)
+        if self.current_category == "Tiles":
+            self.change_block_page(window_size)
+            self.select_block(window_size)
         self.select_layer(window_size)
         self.draw_editor(window_size)
 
