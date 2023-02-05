@@ -107,28 +107,49 @@ class Editor(TileMap):
 
         if mouseaction[0] and (6 <= mousepos[0] <= 54 and 41 <= mousepos[1] <= 218): 
             selected_block = None
+            selected_block_type = None
             for pos in self.blocks_interactables[self.current_page]:
                 if self.blocks_interactables[self.current_page][pos][2].collidepoint(mousepos):
                     selected_block = self.blocks_interactables[self.current_page][pos][1]
-            
+                    selected_block_type = self.blocks_interactables[self.current_page][pos][0]
             self.selected_block = selected_block         
+            self.selected_block_type = selected_block_type
     
     def mouse_block_interaction(self, screen_size):
+        mouseaction = pygame.mouse.get_pressed()
         mousepos = scale_mouse_pos(screen_size)
+
+        layerspeed = self.all_layers[str(self.current_layer)]["layerspeed"]
+        x = (mousepos[0]-60) #* self.all_layers[str(self.current_layer)]["layerspeed"]
+        y = (mousepos[1]) #* self.all_layers[str(self.current_layer)]["layerspeed"]
+        x = (x - x % self.tile_size) / self.tile_size + self.camerapos[0] * self.all_layers[str(self.current_layer)]["layerspeed"]
+        y = (y - y % self.tile_size) / self.tile_size + self.camerapos[1] * self.all_layers[str(self.current_layer)]["layerspeed"]
 
         if 60 <= mousepos[0] <= 440 and 0 <= mousepos[1] <= 220:
             if self.selected_block != None:
-                self.editormap.blit(self.selected_block, mousepos)
+                self.editormap.blit(self.selected_block, (mousepos[0] - mousepos[0]%10 , mousepos[1] - mousepos[1]%10))
+                
+                if mouseaction[0]:
+                    if self.add_tile(self.selected_block_type, (x,y), self.current_layer):
+                        print(f"Place | Block type: {self.selected_block_type} | Layer: {self.current_layer} | Layer speed: {layerspeed} | x: {x} y: {y} | Camera pos: {self.camerapos}")
+
+                if mouseaction[1]:
+                    self.selected_block = None
+                    self.selected_block_type = None
+
+            if mouseaction[2]:
+                if self.remove_tile((x,y), self.current_layer):
+                    print(f"Remove | Layer: {self.current_layer} | x: {x} y: {y} | Camera pos: {self.camerapos}")
 
     def movecamera(self, mov):
         if mov["left"]:
-            self.camerapos[0]+=1
+            self.camerapos[0] += 1
         if mov["right"]:
-            self.camerapos[0]-=1
+            self.camerapos[0] -= 1
         if mov["down"]:
-            self.camerapos[1]-=1
+            self.camerapos[1] -= 1
         if mov["up"]:
-            self.camerapos[1]+=1
+            self.camerapos[1] += 1
 
     def draw_layers(self):
         c = 0

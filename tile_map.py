@@ -25,12 +25,16 @@ class TileMap():
         self.collidables = []
         self.current_layer = None
 
+        self.loaded_map = None
+
     def load_map(self, path):
         with open(path, 'r') as f:
             json_data = json.load(f)
         
         self.tile_map = json_data['map']
         self.all_layers = json_data['all_layers']
+
+        self.loaded_map = path
 
     def save_map(self, path):
         with open(path, "w") as f:
@@ -40,6 +44,7 @@ class TileMap():
         self.collidables = []
 
         for layer in sorted(self.all_layers):
+            #print(f"            LAYER {layer}")
             for tile in self.tile_map[layer].values():
 
                 if self.all_layers[layer]["layerspeed"] < 1:
@@ -55,17 +60,20 @@ class TileMap():
                 x = (tile["pos"][0] - playerpos[0]) * self.tile_size * self.all_layers[layer]["layerspeed"] + addedlayerspeedx
                 y = (tile["pos"][1] - playerpos[1]) * self.tile_size * self.all_layers[layer]["layerspeed"] + addedlayerspeedy
 
-                if 0 <= x <= 380 and 0 <= y <= 240:
+                if -10 <= x <= 390 and -10 <= y <= 250:
 
                     if self.current_layer == None or int(layer) == int(self.current_layer):
                         display.blit(self.tiles[tile["type"]], (x, y))
                     else:
-                        blit_alpha(display, self.tiles[tile["type"]], (x,y), 128)
+                        blit_alpha(display, self.tiles[tile["type"]], (x,y), 50)
                 
                     if tile["layer"] == 0:
                         rect = self.tiles[tile["type"]].get_rect()
                         rect.topleft = (x, y)
                         self.collidables.append(rect)
+                    #print("Layer: ",layer," | Current pos: ",[x/10,y/10], " | Tile pos: ", tile["pos"], "| Type: ", tile["type"])
+            #print("-------------------------------")
+        #print('===============================')
                 
     
     def collides(self, rect):
@@ -77,18 +85,22 @@ class TileMap():
     def add_tile(self, type, pos, layer=None):
         if layer == None:
             layer = self.current_layer
-        if type not in self.tiles:
-            return False
+        
         self.tile_map[str(layer)][str(pos[0])+";"+str(pos[1])] = {"type": type, "pos": list(pos), "layer": layer}
-        if layer not in self.all_layers:
-            self.all_layers.append(layer)
-    
+
+        if str(layer) not in self.all_layers:
+            self.add_layer(layer)
+
+        return True
+
     def add_layer(self, layer):
-        if layer in self.all_layers:
+        if str(layer) in self.all_layers:
             return False
         
-        self.all_layers.append(int(layer))
+        self.all_layers[str(layer)] = {"layerspeed":1}
         self.tile_map[str(layer)] = {}
+
+        return True
     
     def remove_tile(self, pos, layer=None):
         if layer == None:
@@ -98,10 +110,14 @@ class TileMap():
         
         del self.tile_map[str(layer)][str(pos[0])+";"+str(pos[1])]
 
+        return True
+
     def remove_layer(self, layer):
         if layer not in self.all_layers:
             return False
 
         self.all_layers.remove(layer)
         del self.tile_map[str(layer)]
+
+        return True
 
