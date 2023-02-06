@@ -13,7 +13,7 @@ def main():
 
     screen = pygame.display.set_mode((x_screen_size, y_screen_size))
     #screen = pygame.display.set_mode((480, 280))
-    pygame.display.set_caption('The game')
+    pygame.display.set_caption('The game editor')
 
     display = pygame.Surface((480, 280))    
 

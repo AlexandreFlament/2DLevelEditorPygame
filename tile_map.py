@@ -65,7 +65,7 @@ class TileMap():
                     if self.current_layer == None or int(layer) == int(self.current_layer):
                         display.blit(self.tiles[tile["type"]], (x, y))
                     else:
-                        blit_alpha(display, self.tiles[tile["type"]], (x,y), 50)
+                        blit_alpha(display, self.tiles[tile["type"]], (x,y), 100)
                 
                     if tile["layer"] == 0:
                         rect = self.tiles[tile["type"]].get_rect()
