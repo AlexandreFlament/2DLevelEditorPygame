@@ -22,7 +22,7 @@ def main():
     keys = {"left":False,"right":False,"jump":False,"up":False,"down":False}
 
     ed = Editor(10, "Tiles/")
-    ed.load_map("test_save.json")
+    ed.load_map("map_0.json")
 
     while True:
         display.fill((0, 0, 0))
@@ -68,6 +68,6 @@ def main():
 
         screen.blit(pygame.transform.scale(ed.editormap, pygame.display.get_window_size()), (0,0))
         pygame.display.update()
-        clock.tick(60)
+        clock.tick(30)
 
 main()

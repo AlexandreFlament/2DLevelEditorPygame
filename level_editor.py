@@ -26,8 +26,15 @@ class Editor(TileMap):
         self.clicked = False
         self.hoverables = [[pygame.image.load("Assets/opacity_hover.png"), (221,295,226,241)],
         [pygame.image.load("Assets/remove_hover.png"), (141,179,241,252)],
-        [pygame.image.load("Assets/clear_hover.png"), (184,209,241,252)]
+        [pygame.image.load("Assets/clear_hover.png"), (184,209,241,252)],
+        [pygame.image.load("Assets/uncheck_hover.png"), (121,132,251,262)],
+        [pygame.image.load("Assets/check_hover.png"), (199,210,258,269)]
         ]
+
+        self.options = {
+            "addlayer": {"layer":0, "speed":1},
+            "currentlayer":{"speed":1}
+        }
 
         self.add_layer_rect = pygame.Rect(145, 231, 13, 12)
         self.remove_layer_rect = pygame.Rect(145, 245, 13, 12)
@@ -128,8 +135,8 @@ class Editor(TileMap):
         mousepos = scale_mouse_pos(screen_size)
 
         layerspeed = self.all_layers[str(self.current_layer)]["layerspeed"]
-        x = (mousepos[0]-60) #* self.all_layers[str(self.current_layer)]["layerspeed"]
-        y = (mousepos[1]) #* self.all_layers[str(self.current_layer)]["layerspeed"]
+        x = (mousepos[0]-60)
+        y = (mousepos[1])
         x = (x - x % self.tile_size) / self.tile_size + self.camerapos[0] * self.all_layers[str(self.current_layer)]["layerspeed"]
         y = (y - y % self.tile_size) / self.tile_size + self.camerapos[1] * self.all_layers[str(self.current_layer)]["layerspeed"]
 
@@ -151,13 +158,13 @@ class Editor(TileMap):
 
     def movecamera(self, mov):
         if mov["right"]:
-            self.camerapos[0] += 1
-        if mov["left"]:
             self.camerapos[0] -= 1
+        if mov["left"]:
+            self.camerapos[0] += 1
         if mov["up"]:
-            self.camerapos[1] -= 1
-        if mov["down"]:
             self.camerapos[1] += 1
+        if mov["down"]:
+            self.camerapos[1] -= 1
 
     def draw_layers(self):
         c = 0
@@ -193,6 +200,9 @@ class Editor(TileMap):
                 if 443 <= mousepos[0] <= 479 and 22 + 12*layerpos <= mousepos[1] <= 21 + 12*layerpos + 11:
                     self.current_layer = sorted(list(self.all_layers.keys()))[layerpos]
     
+    def addlayer(self):
+        pass
+
     def toggle_opacity(self, screen_size):
         mouseaction = pygame.mouse.get_pressed()
         mousepos = scale_mouse_pos(screen_size)
@@ -225,6 +235,7 @@ class Editor(TileMap):
         self.draw_editor(window_size)
         self.click_handler()
         self.hover_handler(window_size)
+
 
 # 60 0
 # 440 220
