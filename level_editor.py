@@ -22,6 +22,12 @@ class Editor(TileMap):
         self.current_category = "Tiles"
         self.all_pages = []
         self.camerapos = [0,0]
+        self.opacity = True
+        self.clicked = False
+        self.hoverables = [[pygame.image.load("Assets/opacity_hover.png"), (221,295,226,241)],
+        [pygame.image.load("Assets/remove_hover.png"), (141,179,241,252)],
+        [pygame.image.load("Assets/clear_hover.png"), (184,209,241,252)]
+        ]
 
         self.add_layer_rect = pygame.Rect(145, 231, 13, 12)
         self.remove_layer_rect = pygame.Rect(145, 245, 13, 12)
@@ -187,13 +193,38 @@ class Editor(TileMap):
                 if 443 <= mousepos[0] <= 479 and 22 + 12*layerpos <= mousepos[1] <= 21 + 12*layerpos + 11:
                     self.current_layer = sorted(list(self.all_layers.keys()))[layerpos]
     
+    def toggle_opacity(self, screen_size):
+        mouseaction = pygame.mouse.get_pressed()
+        mousepos = scale_mouse_pos(screen_size)
+
+        if mouseaction[0] == 1 and not self.clicked:
+            if 221 <= mousepos[0] <= 295 and 226 <= mousepos[1] <= 241:
+                self.opacity = not self.opacity
+
+    def click_handler(self):
+        mouseaction = pygame.mouse.get_pressed()
+        if mouseaction[0]:
+            self.clicked = True
+        else:
+            self.clicked = False
+    
+    def hover_handler(self, screen_size):
+        mousepos = scale_mouse_pos(screen_size)
+
+        for L in self.hoverables:
+            if L[1][0] <= mousepos[0] <= L[1][1] and L[1][2] <= mousepos[1] <= L[1][3]:
+                self.editormap.blit(L[0], (L[1][0], L[1][2]))
+
     def update(self, keys, window_size):
         self.movecamera(keys)
         if self.current_category == "Tiles":
             self.change_block_page(window_size)
             self.select_block(window_size)
         self.select_layer(window_size)
+        self.toggle_opacity(window_size)
         self.draw_editor(window_size)
+        self.click_handler()
+        self.hover_handler(window_size)
 
 # 60 0
 # 440 220
