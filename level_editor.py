@@ -32,8 +32,8 @@ class Editor(TileMap):
         ]
 
         self.options = {
-            "addlayer": {"layer":0, "speed":1},
-            "currentlayer":{"speed":1}
+            "addlayer": {"layer":["0","1","2","3","4","5","-1","-2","-3","-4","-5"], "speed":["1.0","1.5","2.0","3.0","0.25","0.5","0.75"]},
+            "currentlayer":{"speed":"1.0"}
         }
 
         self.add_layer_rect = pygame.Rect(145, 231, 13, 12)
@@ -200,8 +200,18 @@ class Editor(TileMap):
                 if 443 <= mousepos[0] <= 479 and 22 + 12*layerpos <= mousepos[1] <= 21 + 12*layerpos + 11:
                     self.current_layer = sorted(list(self.all_layers.keys()))[layerpos]
     
-    def addlayer(self):
-        pass
+    def addlayer(self, screen_size):
+        mouseaction = pygame.mouse.get_pressed()
+        mousepos = scale_mouse_pos(screen_size)
+
+        if 97 <= mousepos[0] <= 114 and 243 <= mousepos[1] <= 255:
+            pass
+        if 97 <= mousepos[0] <= 114 and 258 <= mousepos[1] <= 270:
+            pass
+
+        if self.options["addlayer"]["layer"][0] not in self.all_layers: 
+            self.editormap.blit(pygame.image.load("Assets/check.png"), (121,251))
+            self.hoverables[3] = [pygame.image.load("Assets/check_hover.png"), (121,132,251,262)]
 
     def toggle_opacity(self, screen_size):
         mouseaction = pygame.mouse.get_pressed()
@@ -233,6 +243,7 @@ class Editor(TileMap):
         self.select_layer(window_size)
         self.toggle_opacity(window_size)
         self.draw_editor(window_size)
+        self.addlayer()
         self.click_handler()
         self.hover_handler(window_size)
 

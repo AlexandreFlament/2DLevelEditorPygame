@@ -22,7 +22,7 @@ def main():
     keys = {"left":False,"right":False,"jump":False,"up":False,"down":False}
 
     ed = Editor(10, "Tiles/")
-    ed.load_map("map_0.json")
+    ed.load_map("test_save.json")
 
     while True:
         display.fill((0, 0, 0))
