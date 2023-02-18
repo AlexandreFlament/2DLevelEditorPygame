@@ -18,7 +18,6 @@ def main():
     display = pygame.Surface((480, 280))    
 
     clock = pygame.time.Clock()
-    playerpos = [0,0]
     keys = {"left":False,"right":False,"jump":False,"up":False,"down":False}
 
     ed = Editor(10, "Tiles/")
@@ -56,15 +55,6 @@ def main():
                     keys["down"] = False
             if event.type == MOUSEWHEEL:
                 keys["Wheel"]=event.y
-        
-        if keys["left"]:
-            playerpos[0]+=1
-        if keys["right"]:
-            playerpos[0]-=1
-        if keys["down"]:
-            playerpos[1]-=1
-        if keys["up"]:
-            playerpos[1]+=1
 
         ed.update(keys, pygame.display.get_window_size())
 

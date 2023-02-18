@@ -163,13 +163,13 @@ class Editor(TileMap):
 
     def movecamera(self, mov):
         if mov["right"]:
-            self.camerapos[0] -= 1
-        if mov["left"]:
             self.camerapos[0] += 1
+        if mov["left"]:
+            self.camerapos[0] -= 1
         if mov["up"]:
-            self.camerapos[1] += 1
-        if mov["down"]:
             self.camerapos[1] -= 1
+        if mov["down"]:
+            self.camerapos[1] += 1
 
     def draw_layers(self):
         c = 0
