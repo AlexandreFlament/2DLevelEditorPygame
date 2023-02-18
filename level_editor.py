@@ -33,11 +33,11 @@ class Editor(TileMap):
 
         self.options = {
             "addlayer": {
-                "layer":["0","1","2","3","4","5","-1","-2","-3","-4","-5"], 
-                "speed":["1.0", "1.5","2.0","3.0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9"]
+                "layer":["0","1","2","3","4","5","-5","-4","-3","-2","-1"], 
+                "speed":["1.0", "1.5","0.5"]
                 },
             "currentlayer":{
-                "speed":["1.0", "1.5","2.0","3.0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9"]
+                "speed":["1.0", "1.5","0.5"]
                 }
         }
 
@@ -177,20 +177,12 @@ class Editor(TileMap):
 
             self.editormap.blit(pygame.image.load("Assets\Layer.png"), (445, 22 + 12*c))
             
-            if c%2 == 0:
-                if int(layer) < 0:
-                    self.editormap.blit(pygame.image.load(f"Assets\{str(layer)[0]}.png"), (467, 27 + 12*c))
-                    self.editormap.blit(pygame.image.load(f"Assets\{str(layer)[1]}.png"), (470 - c, 22 + 12*c))
-                else:
-                    self.editormap.blit(pygame.image.load(f"Assets\{str(layer)}.png"), (472 - c, 22 + 12*c))
-                c+=1
+            if int(layer) < 0:
+                self.editormap.blit(pygame.image.load(f"Assets\{str(layer)[0]}.png"), (467, 27 + 12*c))
+                self.editormap.blit(pygame.image.load(f"Assets\{str(layer)[1]}.png"), (470, 22 + 12*c))
             else:
-                if int(layer) < 0:
-                    self.editormap.blit(pygame.image.load(f"Assets\{str(layer)[0]}.png"), (467, 27 + 12*c))
-                    self.editormap.blit(pygame.image.load(f"Assets\{str(layer)[1]}.png"), (471 - c, 22 + 12*c))
-                else:
-                    self.editormap.blit(pygame.image.load(f"Assets\{str(layer)}.png"), (473 - c, 22 + 12*c))
-                c+=1
+                self.editormap.blit(pygame.image.load(f"Assets\{str(layer)}.png"), (470, 22 + 12*c))
+            c+=1
 
             if str(layer) == str(self.current_layer):
                 line = pygame.rect.Rect(443, 22+12*c-1-12,1,12)
@@ -205,18 +197,39 @@ class Editor(TileMap):
                 if 443 <= mousepos[0] <= 479 and 22 + 12*layerpos <= mousepos[1] <= 21 + 12*layerpos + 11:
                     self.current_layer = sorted(list(self.all_layers.keys()))[layerpos]
     
-    def addlayer(self, screen_size):
+    def addlayer(self, screen_size, wheel):
         mouseaction = pygame.mouse.get_pressed()
         mousepos = scale_mouse_pos(screen_size)
 
         if 97 <= mousepos[0] <= 114 and 243 <= mousepos[1] <= 255:
-            pass
+            if wheel < 0 and self.options["addlayer"]["layer"][0] != "-5":
+                self.options["addlayer"]["layer"] = [self.options["addlayer"]["layer"][-1]] + self.options["addlayer"]["layer"][:-1]
+            if wheel > 0 and self.options["addlayer"]["layer"][0] != "5":
+                self.options["addlayer"]["layer"] = self.options["addlayer"]["layer"][1:] + [self.options["addlayer"]["layer"][0]]
         if 97 <= mousepos[0] <= 114 and 258 <= mousepos[1] <= 270:
-            pass
-
+            if wheel < 0 and self.options["addlayer"]["speed"][0] != "0.5":
+                self.options["addlayer"]["speed"] = [self.options["addlayer"]["speed"][-1]] + self.options["addlayer"]["speed"][:-1]
+            if wheel > 0 and self.options["addlayer"]["speed"][0] != "1.5":
+                self.options["addlayer"]["speed"] = self.options["addlayer"]["speed"][1:] + [self.options["addlayer"]["speed"][0]]
+        
         if self.options["addlayer"]["layer"][0] not in self.all_layers: 
             self.editormap.blit(pygame.image.load("Assets/check.png"), (121,251))
             self.hoverables[3] = [pygame.image.load("Assets/check_hover.png"), (121,132,251,262)]
+
+            if mouseaction[0] and 121 <= mousepos[0] <= 132 and 251 <= mousepos[1] <= 262:
+                self.add_layer(self.options["addlayer"]["layer"][0], float(self.options["addlayer"]["speed"][0]))
+                self.hoverables[3] = [pygame.image.load("Assets/uncheck_hover.png"), (121,132,251,262)]
+        
+        nb = self.options["addlayer"]["layer"][0]
+        if nb[0] == "-":
+            self.editormap.blit(pygame.image.load("Assets/-.png"), (103,248))
+            self.editormap.blit(pygame.image.load(f"Assets/{nb[1]}.png"), (107,245))
+        else:
+            self.editormap.blit(pygame.image.load(f"Assets/{nb[0]}.png"), (107,245))
+
+        nb = self.options["addlayer"]["speed"][0]
+        self.editormap.blit(pygame.image.load(f"Assets/{nb[0]}.png"), (99,260))
+        self.editormap.blit(pygame.image.load(f"Assets/{nb[2]}.png"), (107,260))
 
     def currentlayer(self, screen_size, wheel):
         mouseaction = pygame.mouse.get_pressed()
@@ -231,11 +244,12 @@ class Editor(TileMap):
                 self.tile_map[str(self.current_layer)] = {}
             if 199 <= mousepos[0] <= 210 and 258 <= mousepos[1] <= 269 and self.current_layer != 0:
                 self.all_layers[str(self.current_layer)]["layerspeed"] = float(self.options["currentlayer"]["speed"][0])
+                self.all_layers = sorted(self.all_layers)
 
         if 175 <= mousepos[0] <= 192 and 258 <= mousepos[1] <= 270:
-            if wheel < 0 and self.options["currentlayer"]["speed"][0] != "0.1":
+            if wheel < 0 and self.options["currentlayer"]["speed"][0] != "0.5":
                 self.options["currentlayer"]["speed"] = [self.options["currentlayer"]["speed"][-1]] + self.options["currentlayer"]["speed"][:-1]
-            if wheel > 0 and self.options["currentlayer"]["speed"][0] != "3.0":
+            if wheel > 0 and self.options["currentlayer"]["speed"][0] != "1.5":
                 self.options["currentlayer"]["speed"] = self.options["currentlayer"]["speed"][1:] + [self.options["currentlayer"]["speed"][0]]
         
         nb = self.options["currentlayer"]["speed"][0]
@@ -273,7 +287,7 @@ class Editor(TileMap):
         self.select_layer(window_size)
         self.toggle_opacity(window_size)
         self.draw_editor(window_size)
-        self.addlayer(window_size)
+        self.addlayer(window_size, keys["Wheel"])
         self.currentlayer(window_size, keys["Wheel"])
         self.click_handler()
         self.hover_handler(window_size)

@@ -96,11 +96,11 @@ class TileMap():
 
         return True
 
-    def add_layer(self, layer):
+    def add_layer(self, layer, layerspeed):
         if str(layer) in self.all_layers:
             return False
         
-        self.all_layers[str(layer)] = {"layerspeed":1}
+        self.all_layers[str(layer)] = {"layerspeed":layerspeed}
         self.tile_map[str(layer)] = {}
 
         return True
