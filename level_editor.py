@@ -213,6 +213,18 @@ class Editor(TileMap):
             self.editormap.blit(pygame.image.load("Assets/check.png"), (121,251))
             self.hoverables[3] = [pygame.image.load("Assets/check_hover.png"), (121,132,251,262)]
 
+    def currentlayer(self, screen_size):
+        mouseaction = pygame.mouse.get_pressed()
+        mousepos = scale_mouse_pos(screen_size)
+        
+        if mouseaction[0]:
+            if 141 <= mousepos[0] <= 180 and 241 <= mousepos[1] <= 253 and not self.clicked and self.current_layer != 0:
+                del self.tile_map[str(self.current_layer)]
+                del self.all_layers[str(self.current_layer)]
+                self.current_layer = 0
+            if 184 <= mousepos[0] <= 210 and 241 <= mousepos[1] <= 253 and not self.clicked:
+                self.tile_map[str(self.current_layer)] = {}
+
     def toggle_opacity(self, screen_size):
         mouseaction = pygame.mouse.get_pressed()
         mousepos = scale_mouse_pos(screen_size)
@@ -243,7 +255,8 @@ class Editor(TileMap):
         self.select_layer(window_size)
         self.toggle_opacity(window_size)
         self.draw_editor(window_size)
-        self.addlayer()
+        self.addlayer(window_size)
+        self.currentlayer(window_size)
         self.click_handler()
         self.hover_handler(window_size)
 
