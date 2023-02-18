@@ -25,15 +25,20 @@ class Editor(TileMap):
         self.opacity = True
         self.clicked = False
         self.hoverables = [[pygame.image.load("Assets/opacity_hover.png"), (221,295,226,241)],
-        [pygame.image.load("Assets/remove_hover.png"), (141,179,241,252)],
-        [pygame.image.load("Assets/clear_hover.png"), (184,209,241,252)],
+        [pygame.image.load("Assets/remove_hover.png"), (141,180,241,253)],
+        [pygame.image.load("Assets/clear_hover.png"), (184,210,241,253)],
         [pygame.image.load("Assets/uncheck_hover.png"), (121,132,251,262)],
         [pygame.image.load("Assets/check_hover.png"), (199,210,258,269)]
         ]
 
         self.options = {
-            "addlayer": {"layer":["0","1","2","3","4","5","-1","-2","-3","-4","-5"], "speed":["1.0","1.5","2.0","3.0","0.25","0.5","0.75"]},
-            "currentlayer":{"speed":"1.0"}
+            "addlayer": {
+                "layer":["0","1","2","3","4","5","-1","-2","-3","-4","-5"], 
+                "speed":["1.0","1.5","2.0","3.0","0.25","0.5","0.75"]
+                },
+            "currentlayer":{
+                "speed":["1.0", "1.5","2.0","3.0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9"]
+                }
         }
 
         self.add_layer_rect = pygame.Rect(145, 231, 13, 12)
@@ -213,7 +218,7 @@ class Editor(TileMap):
             self.editormap.blit(pygame.image.load("Assets/check.png"), (121,251))
             self.hoverables[3] = [pygame.image.load("Assets/check_hover.png"), (121,132,251,262)]
 
-    def currentlayer(self, screen_size):
+    def currentlayer(self, screen_size, wheel):
         mouseaction = pygame.mouse.get_pressed()
         mousepos = scale_mouse_pos(screen_size)
         
@@ -224,6 +229,20 @@ class Editor(TileMap):
                 self.current_layer = 0
             if 184 <= mousepos[0] <= 210 and 241 <= mousepos[1] <= 253 and not self.clicked:
                 self.tile_map[str(self.current_layer)] = {}
+
+        # x1: 175 x2: 192
+        # y1: 258 y2: 270
+        if 175 <= mousepos[0] <= 192 and 258 <= mousepos[1] <= 270:
+            if wheel < 0 and self.options["currentlayer"]["speed"][0] != "0.1":
+                self.options["currentlayer"]["speed"] = [self.options["currentlayer"]["speed"][-1]] + self.options["currentlayer"]["speed"][:-1]
+            if wheel > 0 and self.options["currentlayer"]["speed"][0] != "3.0":
+                self.options["currentlayer"]["speed"] = self.options["currentlayer"]["speed"][1:] + [self.options["currentlayer"]["speed"][0]]
+
+        
+        nb = self.options["currentlayer"]["speed"][0]
+        self.editormap.blit(pygame.image.load(f"Assets/{nb[0]}.png"), (177,260))
+        self.editormap.blit(pygame.image.load(f"Assets/{nb[2]}.png"), (185,260))
+                
 
     def toggle_opacity(self, screen_size):
         mouseaction = pygame.mouse.get_pressed()
@@ -256,7 +275,7 @@ class Editor(TileMap):
         self.toggle_opacity(window_size)
         self.draw_editor(window_size)
         self.addlayer(window_size)
-        self.currentlayer(window_size)
+        self.currentlayer(window_size, keys["Wheel"])
         self.click_handler()
         self.hover_handler(window_size)
 

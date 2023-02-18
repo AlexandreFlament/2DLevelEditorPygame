@@ -26,10 +26,10 @@ def main():
 
     while True:
         display.fill((0, 0, 0))
-
+        keys["Wheel"] = 0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                ed.save_map(ed.loaded_map)
+                #ed.save_map(ed.loaded_map)
                 pygame.quit()
                 quit()
             if event.type == KEYDOWN:
@@ -54,6 +54,8 @@ def main():
                     keys["up"] = False
                 if event.key in [K_DOWN, K_s]:
                     keys["down"] = False
+            if event.type == MOUSEWHEEL:
+                keys["Wheel"]=event.y
         
         if keys["left"]:
             playerpos[0]+=1
