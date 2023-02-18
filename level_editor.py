@@ -34,7 +34,7 @@ class Editor(TileMap):
         self.options = {
             "addlayer": {
                 "layer":["0","1","2","3","4","5","-1","-2","-3","-4","-5"], 
-                "speed":["1.0","1.5","2.0","3.0","0.25","0.5","0.75"]
+                "speed":["1.0", "1.5","2.0","3.0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9"]
                 },
             "currentlayer":{
                 "speed":["1.0", "1.5","2.0","3.0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9"]
@@ -229,15 +229,14 @@ class Editor(TileMap):
                 self.current_layer = 0
             if 184 <= mousepos[0] <= 210 and 241 <= mousepos[1] <= 253 and not self.clicked:
                 self.tile_map[str(self.current_layer)] = {}
+            if 199 <= mousepos[0] <= 210 and 258 <= mousepos[1] <= 269 and self.current_layer != 0:
+                self.all_layers[str(self.current_layer)]["layerspeed"] = float(self.options["currentlayer"]["speed"][0])
 
-        # x1: 175 x2: 192
-        # y1: 258 y2: 270
         if 175 <= mousepos[0] <= 192 and 258 <= mousepos[1] <= 270:
             if wheel < 0 and self.options["currentlayer"]["speed"][0] != "0.1":
                 self.options["currentlayer"]["speed"] = [self.options["currentlayer"]["speed"][-1]] + self.options["currentlayer"]["speed"][:-1]
             if wheel > 0 and self.options["currentlayer"]["speed"][0] != "3.0":
                 self.options["currentlayer"]["speed"] = self.options["currentlayer"]["speed"][1:] + [self.options["currentlayer"]["speed"][0]]
-
         
         nb = self.options["currentlayer"]["speed"][0]
         self.editormap.blit(pygame.image.load(f"Assets/{nb[0]}.png"), (177,260))
