@@ -19,6 +19,7 @@ class Editor(TileMap):
         self.current_layer = 0
         self.current_page = "0"
         self.current_category = "Images"
+        self.categoryimg = pygame.image.load(f"Assets/{self.current_category}.png")
         self.all_blocks_pages = []
         self.all_images_pages = []
         self.camerapos = [0,0]
@@ -127,7 +128,8 @@ class Editor(TileMap):
         self.levelmap.fill((0,0,0))
         self.draw_map(self.levelmap, tuple(self.camerapos))
         self.editormap.blit(self.levelmap, (60, 0))
-        
+        self.editormap.blit(self.categoryimg, (14,4))
+
         if self.current_category == "Tiles":
             self.mouse_block_interaction()
             for pos in self.blocks_interactables[self.current_page]:
@@ -340,6 +342,15 @@ class Editor(TileMap):
             if 221 <= self.mousepos[0] <= 295 and 226 <= self.mousepos[1] <= 241:
                 self.opacity = not self.opacity
 
+    def category_changer(self):
+        if (4 <= self.mousepos[0] <= 14 and 4 <= self.mousepos[1] <= 13) or (46 <= self.mousepos[0] <= 56 and 4 <= self.mousepos[1] <= 13):
+            if self.mouseaction[0] == 1 and not self.clicked:
+                if self.current_category == "Images":
+                    self.current_category = "Tiles"
+                    self.categoryimg = pygame.image.load("Assets/Blocks.png")
+                else:
+                    self.current_category = "Images"
+                    self.categoryimg = pygame.image.load("Assets/Images.png")
 
     ###################################################   HANDLERS   ###################################################
 
@@ -377,6 +388,7 @@ class Editor(TileMap):
         self.draw_editor()
         self.addlayer(keys["Wheel"])
         self.currentlayer(keys["Wheel"])
+        self.category_changer()
         self.click_handler()
         self.hover_handler()
 
