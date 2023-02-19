@@ -26,7 +26,7 @@ class TileMap():
         [print("Loaded MINI:", mini) for mini in self.mini]
         print()
         [print("Loaded IMAGE:", img) for img in self.images]
-
+        print()
         self.tile_map = {}
         self.all_layers = {}
         self.collidables = []
@@ -43,12 +43,12 @@ class TileMap():
 
         self.loaded_map = path
 
-        print("\nLoaded MAP:",path[6:-5])
+        print("Loaded MAP:",path[6:-5])
 
     def save_map(self, path):
         with open(path, "w") as f:
             json.dump({"map":self.tile_map, "all_layers":self.all_layers}, f)
-        print("\nSaved MAP:", path[6:-5])
+        print("Saved MAP:", path[6:-5])
     
     def draw_map(self, display, playerpos):
         self.collidables = []

@@ -18,7 +18,7 @@ class Editor(TileMap):
         self.selectedblock = None
         self.current_layer = 0
         self.current_page = "0"
-        self.current_category = "Images"
+        self.current_category = "Tiles"
         self.categoryimg = pygame.image.load(f"Assets/{self.current_category}.png")
         self.all_blocks_pages = []
         self.all_images_pages = []
@@ -347,10 +347,13 @@ class Editor(TileMap):
             if self.mouseaction[0] == 1 and not self.clicked:
                 if self.current_category == "Images":
                     self.current_category = "Tiles"
-                    self.categoryimg = pygame.image.load("Assets/Blocks.png")
+                    self.categoryimg = pygame.image.load("Assets/Tiles.png")
+                    print("Loaded TITLE: Tiles")
                 else:
                     self.current_category = "Images"
                     self.categoryimg = pygame.image.load("Assets/Images.png")
+                    print("Loaded TITLE: Images")
+
 
     ###################################################   HANDLERS   ###################################################
 
@@ -391,7 +394,3 @@ class Editor(TileMap):
         self.category_changer()
         self.click_handler()
         self.hover_handler()
-
-
-# 60 0
-# 440 220
