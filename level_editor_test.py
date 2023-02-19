@@ -20,15 +20,15 @@ def main():
     clock = pygame.time.Clock()
     keys = {"left":False,"right":False,"jump":False,"up":False,"down":False}
 
-    ed = Editor(10, "Tiles/")
-    ed.load_map("test_save.json")
+    ed = Editor(10, "Tiles/", "Images/")
+    ed.load_map("Saves/test_save.json")
 
     while True:
         display.fill((0, 0, 0))
         keys["Wheel"] = 0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                #ed.save_map(ed.loaded_map)
+                ed.save_map(ed.loaded_map)
                 pygame.quit()
                 quit()
             if event.type == KEYDOWN:
@@ -60,6 +60,6 @@ def main():
 
         screen.blit(pygame.transform.scale(ed.editormap, pygame.display.get_window_size()), (0,0))
         pygame.display.update()
-        clock.tick(30)
+        clock.tick(60)
 
 main()

@@ -10,17 +10,17 @@ def scale_mouse_pos(screen_size):
 
 
 class Editor(TileMap):
-    def __init__(self, tile_size, tiles_file):
-        super().__init__(tile_size, tiles_file)
+    def __init__(self, tile_size, tiles_file, image_file):
+        super().__init__(tile_size, tiles_file, image_file)
 
         self.levelmap = pygame.Surface((380, 220))
-        self.editormap = pygame.image.load("editor.png")
 
         self.selectedblock = None
         self.current_layer = 0
         self.current_page = "0"
-        self.current_category = "Tiles"
-        self.all_pages = []
+        self.current_category = "Images"
+        self.all_blocks_pages = []
+        self.all_images_pages = []
         self.camerapos = [0,0]
         self.opacity = True
         self.clicked = False
@@ -46,17 +46,15 @@ class Editor(TileMap):
         self.move_to_layer_rect = pygame.Rect(145, 259, 13, 12)
         self.set_layer_speed_rect = pygame.Rect(254, 231, 13, 12)
         
+        ### INIT BLOCKS
         self.blocks_interactables = {}
         self.selected_block = None
 
-        x=0
-        y=0
-        page=0
+        x,y,page=0,0,0
         for tile in self.tiles:
-
             if str(page) not in self.blocks_interactables:
                 self.blocks_interactables[str(page)] = {}
-                self.all_pages.append(str(page))
+                self.all_blocks_pages.append(str(page))
 
             if 0 <= y <= 5:
                 rect = self.tiles[tile].get_rect()
@@ -72,7 +70,7 @@ class Editor(TileMap):
                 rect.topleft = (8 + 17 * x, 44 + 15 * y-3)
 
             self.blocks_interactables[str(page)][str(x)+";"+str(y)] = [tile, self.tiles[tile], rect]
-
+            
             if x == 2:
                 x = 0
                 y += 1
@@ -81,7 +79,43 @@ class Editor(TileMap):
             if y == 12:
                 y = 0
                 page += 1
-                self.all_pages.append(str(page))
+                self.all_blocks_pages.append(str(page))
+
+        ### INIT IMAGES
+        self.images_interactables = {}
+        self.selected_image = None
+
+        x,y,page=0,0,0
+        for image in self.mini:
+
+            if str(page) not in self.images_interactables:
+                self.images_interactables[str(page)] = {}
+                self.all_images_pages.append(str(page))
+
+            if 0 <= y <= 5:
+                rect = self.mini[image].get_rect()
+                rect.topleft = (8 + 17 * x, 44 + 15 * y)
+            elif 6 <= y <= 7:
+                rect = self.mini[image].get_rect()
+                rect.topleft = (8 + 17 * x, 44 + 15 * y-1)
+            elif 8 <= y <= 9:
+                rect = self.mini[image].get_rect()
+                rect.topleft = (8 + 17 * x, 44 + 15 * y-2)
+            elif 10 <= y <= 11:
+                rect = self.mini[image].get_rect()
+                rect.topleft = (8 + 17 * x, 44 + 15 * y-3)
+
+            self.images_interactables[str(page)][str(x)+";"+str(y)] = [image, self.mini[image], rect]
+            
+            if x == 2:
+                x = 0
+                y += 1
+            else:
+                x += 1
+            if y == 12:
+                y = 0
+                page += 1
+                self.all_images_pages.append(str(page))
 
     def draw_editor(self, window_size):
         self.editormap = pygame.image.load("editor.png")
@@ -89,13 +123,18 @@ class Editor(TileMap):
         self.levelmap.fill((0,0,0))
         self.draw_map(self.levelmap, tuple(self.camerapos))
         self.editormap.blit(self.levelmap, (60, 0))
-        self.mouse_block_interaction(window_size)
-
+        
         if self.current_category == "Tiles":
+            self.mouse_block_interaction(window_size)
             for pos in self.blocks_interactables[self.current_page]:
                 pygame.draw.rect(self.editormap, (255,255,255), self.blocks_interactables[self.current_page][pos][2])
                 self.editormap.blit(self.blocks_interactables[self.current_page][pos][1], self.blocks_interactables[self.current_page][pos][2])
-        
+        if self.current_category == "Images":
+            self.mouse_image_interaction(window_size)
+            for pos in self.images_interactables[self.current_page]:
+                pygame.draw.rect(self.editormap, (255,255,255), self.images_interactables[self.current_page][pos][2])
+                self.editormap.blit(self.images_interactables[self.current_page][pos][1], self.images_interactables[self.current_page][pos][2])
+
         self.draw_layers()
     
     '''def block_collide(self, mousepos, screen_size):
@@ -106,6 +145,10 @@ class Editor(TileMap):
         current_blocks = [self.blocks_interactables[self.current_page][pos][2] for pos in self.blocks_interactables[self.current_page]]
         mouserect = pygame.Rect(mousepos[0], mousepos[1], 1,1)'''
 
+
+    ###################################################   BLOCKS   ###################################################
+
+
     def change_block_page(self, screen_size):
         mouseaction = pygame.mouse.get_pressed()
         mousepos = scale_mouse_pos(screen_size)
@@ -113,13 +156,13 @@ class Editor(TileMap):
         left_arrow_rect = pygame.Rect(5, 22, 17, 17)
         right_arrow_rect = pygame.Rect(38, 22, 17, 17)
 
-        if mouseaction[0] and right_arrow_rect.collidepoint(mousepos):
-            self.all_pages = self.all_pages[1:] + [self.all_pages[0]]
-            self.current_page = self.all_pages[0]
+        if mouseaction[0] and right_arrow_rect.collidepoint(mousepos) and not self.clicked:
+            self.all_blocks_pages = self.all_blocks_pages[1:] + [self.all_blocks_pages[0]]
+            self.current_page = self.all_blocks_pages[0]
 
-        if mouseaction[0] and left_arrow_rect.collidepoint(mousepos):
-            self.all_pages = [self.all_pages[-1]] + self.all_pages[:-1]
-            self.current_page = self.all_pages[0]
+        if mouseaction[0] and left_arrow_rect.collidepoint(mousepos) and not self.clicked:
+            self.all_blocks_pages = [self.all_blocks_pages[-1]] + self.all_blocks_pages[:-1]
+            self.current_page = self.all_blocks_pages[0]
 
     def select_block(self, screen_size):
         mouseaction = pygame.mouse.get_pressed()
@@ -161,15 +204,68 @@ class Editor(TileMap):
                 if self.remove_tile((x,y), self.current_layer):
                     print(f"Remove | Layer: {self.current_layer} | x: {x} y: {y} | Camera pos: {self.camerapos}")
 
-    def movecamera(self, mov):
-        if mov["right"]:
-            self.camerapos[0] += 1
-        if mov["left"]:
-            self.camerapos[0] -= 1
-        if mov["up"]:
-            self.camerapos[1] -= 1
-        if mov["down"]:
-            self.camerapos[1] += 1
+
+    ###################################################   IMAGES   ###################################################
+
+
+    def change_image_page(self, screen_size):
+        mouseaction = pygame.mouse.get_pressed()
+        mousepos = scale_mouse_pos(screen_size)
+
+        left_arrow_rect = pygame.Rect(5, 22, 17, 17)
+        right_arrow_rect = pygame.Rect(38, 22, 17, 17)
+
+        if mouseaction[0] and right_arrow_rect.collidepoint(mousepos) and not self.clicked:
+            self.all_images_pages = self.all_images_pages[1:] + [self.all_images_pages[0]]
+            self.current_page = self.all_images_pages[0]
+
+        if mouseaction[0] and left_arrow_rect.collidepoint(mousepos) and not self.clicked:
+            self.all_images_pages = [self.all_images_pages[-1]] + self.all_images_pages[:-1]
+            self.current_page = self.all_images_pages[0]
+    
+    def select_image(self, screen_size):
+        mouseaction = pygame.mouse.get_pressed()
+        mousepos = scale_mouse_pos(screen_size)
+
+        if mouseaction[0] and (6 <= mousepos[0] <= 54 and 41 <= mousepos[1] <= 218): 
+            selected_image = None
+            selected_image_type = None
+            for pos in self.images_interactables[self.current_page]:
+                if self.images_interactables[self.current_page][pos][2].collidepoint(mousepos):
+                    selected_image_type = self.images_interactables[self.current_page][pos][0]
+                    selected_image = self.images[selected_image_type]
+            self.selected_image = selected_image
+            self.selected_image_type = selected_image_type
+    
+    def mouse_image_interaction(self, screen_size):
+        mouseaction = pygame.mouse.get_pressed()
+        mousepos = scale_mouse_pos(screen_size)
+
+        layerspeed = self.all_layers[str(self.current_layer)]["layerspeed"]
+        x = (mousepos[0]-60)
+        y = (mousepos[1])
+        x = (x - x % self.tile_size) / self.tile_size + self.camerapos[0] * self.all_layers[str(self.current_layer)]["layerspeed"]
+        y = (y - y % self.tile_size) / self.tile_size + self.camerapos[1] * self.all_layers[str(self.current_layer)]["layerspeed"]
+
+        if 60 <= mousepos[0] <= 440 and 0 <= mousepos[1] <= 220:
+            if self.selected_image != None:
+                self.editormap.blit(self.selected_image, (mousepos[0] - mousepos[0]%10 , mousepos[1] - mousepos[1]%10))
+
+                if mouseaction[0]:
+                    if self.add_tile(self.selected_image_type, (x,y), self.current_layer):
+                        print(f"Place | Image type: {self.selected_image_type} | Layer: {self.current_layer} | Layer speed: {layerspeed} | x: {x} y: {y} | Camera pos: {self.camerapos}")
+
+                if mouseaction[1]:
+                    self.selected_image = None
+                    self.selected_image_type = None
+
+            if mouseaction[2]:
+                if self.remove_tile((x,y), self.current_layer):
+                    print(f"Remove | Layer: {self.current_layer} | x: {x} y: {y} | Camera pos: {self.camerapos}")
+
+
+    ###################################################   LAYERS   ###################################################
+
 
     def draw_layers(self):
         c = 0
@@ -255,7 +351,20 @@ class Editor(TileMap):
         nb = self.options["currentlayer"]["speed"][0]
         self.editormap.blit(pygame.image.load(f"Assets/{nb[0]}.png"), (177,260))
         self.editormap.blit(pygame.image.load(f"Assets/{nb[2]}.png"), (185,260))
-                
+             
+
+    ###################################################   OTHERS   ###################################################
+
+   
+    def movecamera(self, mov):
+        if mov["right"]:
+            self.camerapos[0] += 1
+        if mov["left"]:
+            self.camerapos[0] -= 1
+        if mov["up"]:
+            self.camerapos[1] -= 1
+        if mov["down"]:
+            self.camerapos[1] += 1
 
     def toggle_opacity(self, screen_size):
         mouseaction = pygame.mouse.get_pressed()
@@ -264,6 +373,10 @@ class Editor(TileMap):
         if mouseaction[0] == 1 and not self.clicked:
             if 221 <= mousepos[0] <= 295 and 226 <= mousepos[1] <= 241:
                 self.opacity = not self.opacity
+
+
+    ###################################################   HANDLERS   ###################################################
+
 
     def click_handler(self):
         mouseaction = pygame.mouse.get_pressed()
@@ -279,11 +392,18 @@ class Editor(TileMap):
             if L[1][0] <= mousepos[0] <= L[1][1] and L[1][2] <= mousepos[1] <= L[1][3]:
                 self.editormap.blit(L[0], (L[1][0], L[1][2]))
 
+
+    ###################################################   UPDATE   ###################################################
+
+
     def update(self, keys, window_size):
         self.movecamera(keys)
         if self.current_category == "Tiles":
             self.change_block_page(window_size)
             self.select_block(window_size)
+        if self.current_category == "Images":
+            self.change_image_page(window_size)
+            self.select_image(window_size)
         self.select_layer(window_size)
         self.toggle_opacity(window_size)
         self.draw_editor(window_size)
