@@ -181,7 +181,7 @@ class Editor(TileMap):
             if self.selected_block != None:
                 self.editormap.blit(self.selected_block, (self.mousepos[0] - self.mousepos[0]%10 , self.mousepos[1] - self.mousepos[1]%10))
                 
-                if self.mouseaction[0] and not self.clicked:
+                if self.mouseaction[0]:
                     if self.add_tile(self.selected_block_type, (x,y), self.current_layer):
                         print(f"Place | Block type: {self.selected_block_type} | Layer: {self.current_layer} | Layer speed: {layerspeed} | x: {x} y: {y} | Camera pos: {self.camerapos}")
 
@@ -249,18 +249,18 @@ class Editor(TileMap):
 
     def draw_layers(self):
         c = 0
-        for layer in sorted(self.all_layers):             
+        for layer in sorted([int(layr) for layr in self.all_layers]):             
 
             self.editormap.blit(pygame.image.load("Assets\Layer.png"), (445, 22 + 12*c))
             
-            if int(layer) < 0:
+            if layer < 0:
                 self.editormap.blit(pygame.image.load(f"Assets\{str(layer)[0]}.png"), (467, 27 + 12*c))
                 self.editormap.blit(pygame.image.load(f"Assets\{str(layer)[1]}.png"), (470, 22 + 12*c))
             else:
                 self.editormap.blit(pygame.image.load(f"Assets\{str(layer)}.png"), (470, 22 + 12*c))
             c+=1
 
-            if str(layer) == str(self.current_layer):
+            if layer == str(self.current_layer):
                 line = pygame.rect.Rect(443, 22+12*c-1-12,1,12)
                 pygame.draw.rect(self.editormap, (255,215,0), line)
     
@@ -311,7 +311,6 @@ class Editor(TileMap):
                 self.tile_map[str(self.current_layer)] = {}
             if 199 <= self.mousepos[0] <= 210 and 258 <= self.mousepos[1] <= 269 and self.current_layer != 0:
                 self.all_layers[str(self.current_layer)]["layerspeed"] = float(self.options["currentlayer"]["speed"][0])
-                self.all_layers = sorted(self.all_layers)
 
         if 175 <= self.mousepos[0] <= 192 and 258 <= self.mousepos[1] <= 270:
             if wheel < 0 and self.options["currentlayer"]["speed"][0] != "0.5":
@@ -329,13 +328,13 @@ class Editor(TileMap):
    
     def movecamera(self, mov):
         if mov["right"]:
-            self.camerapos[0] += 1
+            self.camerapos[0] += 0.5
         if mov["left"]:
-            self.camerapos[0] -= 1
+            self.camerapos[0] -= 0.5
         if mov["up"]:
-            self.camerapos[1] -= 1
+            self.camerapos[1] -= 0.5
         if mov["down"]:
-            self.camerapos[1] += 1
+            self.camerapos[1] += 0.5
 
     def toggle_opacity(self):
         if self.mouseaction[0] == 1 and not self.clicked:
@@ -394,3 +393,5 @@ class Editor(TileMap):
         self.category_changer()
         self.click_handler()
         self.hover_handler()
+
+

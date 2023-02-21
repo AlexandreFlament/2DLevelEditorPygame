@@ -22,11 +22,8 @@ class TileMap():
         self.mini = {".".join(f.split(".")[:-1]):pygame.image.load(image_file+"Mini/"+f) for f in os.listdir(image_file+"Mini/")}
 
         [print("Loaded TILE:", tile) for tile in self.tiles]
-        print()
         [print("Loaded MINI:", mini) for mini in self.mini]
-        print()
         [print("Loaded IMAGE:", img) for img in self.images]
-        print()
         self.tile_map = {}
         self.all_layers = {}
         self.collidables = []
@@ -44,52 +41,55 @@ class TileMap():
         self.loaded_map = path
 
         print("Loaded MAP:",path[6:-5])
+        print()
 
     def save_map(self, path):
         with open(path, "w") as f:
             json.dump({"map":self.tile_map, "all_layers":self.all_layers}, f)
-        print("Saved MAP:", path[6:-5])
+        print("\nSaved MAP:", path[6:-5])
     
     def draw_map(self, display, playerpos):
         self.collidables = []
-
-        for layer in self.all_layers:
+        for layer in sorted([int(layr) for layr in self.all_layers]):
             #print(f"            LAYER {layer}")
-            for tile in self.tile_map[layer].values():
+            for tile in self.tile_map[str(layer)].values():
 
-                if self.all_layers[layer]["layerspeed"] < 1:
+                if self.all_layers[str(layer)]["layerspeed"] < 1:
                     addedlayerspeedx = + (tile["pos"][0] / 2 * self.tile_size)
                     addedlayerspeedy = + (tile["pos"][1] / 2 * self.tile_size)
-                elif self.all_layers[layer]["layerspeed"] == 1:
+                elif self.all_layers[str(layer)]["layerspeed"] == 1:
                     addedlayerspeedx = 0
                     addedlayerspeedy = 0
                 else:
                     addedlayerspeedx = - (tile["pos"][0] / 2 * self.tile_size)
                     addedlayerspeedy = - (tile["pos"][1] / 2 * self.tile_size)
 
-                x = (tile["pos"][0] - playerpos[0]) * self.tile_size * self.all_layers[layer]["layerspeed"] + addedlayerspeedx
-                y = (tile["pos"][1] - playerpos[1]) * self.tile_size * self.all_layers[layer]["layerspeed"] + addedlayerspeedy
-
-                if -10 <= x <= 390 and -10 <= y <= 250 or tile["type"] in self.images:
+                if self.all_layers[str(layer)]["layerspeed"] == 0:
+                    x = tile["pos"][0]
+                    y = tile["pos"][1]
+                else:
+                    x = (tile["pos"][0] - playerpos[0]) * self.tile_size * self.all_layers[str(layer)]["layerspeed"] + addedlayerspeedx
+                    y = (tile["pos"][1] - playerpos[1]) * self.tile_size * self.all_layers[str(layer)]["layerspeed"] + addedlayerspeedy
                     
-                    if tile["type"] in self.tiles:
-                        toblit = self.tiles[tile["type"]]
-                    if tile["type"] in self.images:
-                        toblit = self.images[tile["type"]]
+                if tile["type"] in self.tiles:
+                    toblit = self.tiles[tile["type"]]
+                if tile["type"] in self.images:
+                    toblit = self.images[tile["type"]]
 
-                    if self.current_layer == None or int(layer) == int(self.current_layer):
-                        display.blit(toblit, (x, y))
+                if self.current_layer == None or layer == int(self.current_layer):
+                    display.blit(toblit, (x, y))
+                else:
+                    if self.opacity:
+                        blit_alpha(display, toblit, (x,y), 100)
                     else:
-                        if self.opacity:
-                            blit_alpha(display, toblit, (x,y), 100)
-                        else:
-                            display.blit(toblit, (x, y))
+                        display.blit(toblit, (x, y))
                 
-                    if tile["layer"] == 0:
-                        rect = toblit.get_rect()
-                        rect.topleft = (x, y)
-                        self.collidables.append(rect)
-                    #print("Layer: ",layer," | Current pos: ",[x/10,y/10], " | Tile pos: ", tile["pos"], "| Type: ", tile["type"])
+                if tile["layer"] == 0:
+                    rect = toblit.get_rect()
+                    rect.topleft = (x, y)
+                    self.collidables.append(rect)
+                #if -10 <= x <= 390 and -10 <= y <= 250:                                                                            # too lagy when lots of blocks
+                    #print("Layer: ",layer," | Current pos: ",[x/10,y/10], " | Tile pos: ", tile["pos"], "| Type: ", tile["type"])  # the forbidden line
             #print("-------------------------------")
         #print('===============================')
                 
