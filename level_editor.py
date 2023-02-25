@@ -260,15 +260,17 @@ class Editor(TileMap):
                 self.editormap.blit(pygame.image.load(f"Assets\{str(layer)}.png"), (470, 22 + 12*c))
             c+=1
 
-            if layer == str(self.current_layer):
+            if layer == self.current_layer:
                 line = pygame.rect.Rect(443, 22+12*c-1-12,1,12)
                 pygame.draw.rect(self.editormap, (255,215,0), line)
+
     
     def select_layer(self):
         if self.mouseaction[0] == 1:
             for layerpos in range(len(self.all_layers)):
                 if 443 <= self.mousepos[0] <= 479 and 22 + 12*layerpos <= self.mousepos[1] <= 21 + 12*layerpos + 11:
-                    self.current_layer = sorted(list(self.all_layers.keys()))[layerpos]
+                    self.current_layer = sorted([int(layr) for layr in self.all_layers])[layerpos]
+
     
     def addlayer(self, wheel):
         if 97 <= self.mousepos[0] <= 114 and 243 <= self.mousepos[1] <= 255:
