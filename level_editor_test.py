@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 from level_editor import Editor
 from pygame.locals import *
 
@@ -29,7 +29,7 @@ def main():
             if event.type == pygame.QUIT:
                 ed.save_map(ed.loaded_map)
                 pygame.quit()
-                quit()
+                sys.exit()
             if event.type == KEYDOWN:
                 if event.key in [K_LEFT, K_q]:
                     keys["left"] = True
