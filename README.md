@@ -1,2 +1,1 @@
-To use the editor, run the level_editor_test.py
-To change the file that's edited, change the 23rd line in level_editor_test.py
+To run, run the level_editor_test.exe file, it will edit the Saves\mapdemo.json save.
