@@ -374,6 +374,8 @@ class Editor(TileMap):
         if self.changespawn and 60 <= self.mousepos[0] <= 440 and 0 <= self.mousepos[1] <= 220:
             self.editormap.blit(self.origincross, (self.mousepos[0] - self.mousepos[0]%10 , self.mousepos[1] - self.mousepos[1]%10))
 
+        if self.changespawn and self.mouseaction[1]:
+            self.changespawn = False
 
         if self.changespawn and self.mouseaction[0] and not self.clicked and 60 <= self.mousepos[0] <= 440 and 0 <= self.mousepos[1] <= 220:
             x = (self.mousepos[0]-60)
