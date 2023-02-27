@@ -39,7 +39,7 @@ class Editor(TileMap):
         self.options = {
             "addlayer": {
                 "layer":["0","1","2","3","4","5","-5","-4","-3","-2","-1"], 
-                "speed":["1.0", "1.5","0.5"]
+                "speed":["1.0", "1.5","0.0","0.5"]
                 },
             "currentlayer":{
                 "speed":["1.0", "1.5","0.5"]
@@ -284,7 +284,7 @@ class Editor(TileMap):
             if wheel > 0 and self.options["addlayer"]["layer"][0] != "5":
                 self.options["addlayer"]["layer"] = self.options["addlayer"]["layer"][1:] + [self.options["addlayer"]["layer"][0]]
         if 97 <= self.mousepos[0] <= 114 and 258 <= self.mousepos[1] <= 270:
-            if wheel < 0 and self.options["addlayer"]["speed"][0] != "0.5":
+            if wheel < 0 and self.options["addlayer"]["speed"][0] != "0.0":
                 self.options["addlayer"]["speed"] = [self.options["addlayer"]["speed"][-1]] + self.options["addlayer"]["speed"][:-1]
             if wheel > 0 and self.options["addlayer"]["speed"][0] != "1.5":
                 self.options["addlayer"]["speed"] = self.options["addlayer"]["speed"][1:] + [self.options["addlayer"]["speed"][0]]
