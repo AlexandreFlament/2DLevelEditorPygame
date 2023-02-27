@@ -4,9 +4,6 @@ from pygame.locals import *
 
 def main():
 
-    with open("config.json", "r") as f:
-        config = json.load(f)
-
     #Music
     pygame.mixer.pre_init(44100, -16, 2, 4096)
     pygame.init()
@@ -20,8 +17,8 @@ def main():
 
     display = pygame.Surface((380, 220))
 
-    Map = TileMap(10, "Tiles/")
-    Map.load_map("map_0.json")
+    Map = TileMap(10, "Tiles/", "Images/")
+    Map.load_map("Saves/mapdemo.json")
 
     mouse_tile = pygame.image.load("Tiles/dirt_box_full.png")
 
@@ -69,13 +66,13 @@ def main():
                     keys["down"] = False
         
         if keys["left"]:
-            playerpos[0]+=1
-        if keys["right"]:
             playerpos[0]-=1
+        if keys["right"]:
+            playerpos[0]+=1
         if keys["down"]:
-            playerpos[1]-=1
-        if keys["up"]:
             playerpos[1]+=1
+        if keys["up"]:
+            playerpos[1]-=1
             
         screen.blit(pygame.transform.scale(display, pygame.display.get_window_size()), (0,0))
         pygame.display.update()
