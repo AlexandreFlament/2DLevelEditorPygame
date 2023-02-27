@@ -32,26 +32,26 @@ def main():
                 sys.exit()
             if event.type == KEYDOWN:
                 if event.key in [K_LEFT, K_q]:
-                    keys["left"] = True
+                    keys["left"] = 0.5
                 if event.key in [K_RIGHT, K_d]:
-                    keys["right"] = True
+                    keys["right"] = 0.5
                 if event.key in [K_SPACE, K_z, K_UP]:
                     keys["jump"] = True
                 if event.key in [K_UP, K_z]:
-                    keys["up"] = True
+                    keys["up"] = 0.5
                 if event.key in [K_DOWN, K_s]:
-                    keys["down"] = True
+                    keys["down"] = 0.5
             if event.type == KEYUP:
                 if event.key in [K_LEFT, K_q]:
-                    keys["left"] = False
+                    keys["left"] = 0
                 if event.key in [K_RIGHT, K_d]:
-                    keys["right"] = False
+                    keys["right"] = 0
                 if event.key in [K_SPACE, K_w, K_UP]:
                     keys["jump"] = False
                 if event.key in [K_UP, K_z]:
-                    keys["up"] = False
+                    keys["up"] = 0
                 if event.key in [K_DOWN, K_s]:
-                    keys["down"] = False
+                    keys["down"] = 0
             if event.type == MOUSEWHEEL:
                 keys["Wheel"]=event.y
 

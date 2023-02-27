@@ -29,6 +29,9 @@ class TileMap():
         self.collidables = []
         self.current_layer = None
 
+        self.camerapos = [0,0]
+        self.basecamerapos = None
+
         self.loaded_map = None
 
     def load_map(self, path):
@@ -37,15 +40,18 @@ class TileMap():
         
         self.tile_map = json_data['map']
         self.all_layers = json_data['all_layers']
-
+        self.camerapos = json_data["camera_pos"]
         self.loaded_map = path
 
         print("Loaded MAP:",path[6:-5])
         print()
 
     def save_map(self, path):
+        if self.basecamerapos is None:
+            with open(path, 'r') as f:
+                self.basecamerapos = json.load(f)["camera_pos"]
         with open(path, "w") as f:
-            json.dump({"map":self.tile_map, "all_layers":self.all_layers}, f)
+            json.dump({"map":self.tile_map, "all_layers":self.all_layers, "camera_pos":self.basecamerapos}, f)
         print("\nSaved MAP:", path[6:-5])
     
     def draw_map(self, display, playerpos):
@@ -94,7 +100,12 @@ class TileMap():
             #print("-------------------------------")
         #print('===============================')
                 
-    
+    def movecamera(self, mov):
+        self.camerapos[0] += mov["right"]
+        self.camerapos[0] -= mov["left"]
+        self.camerapos[1] -= mov["up"]
+        self.camerapos[1] += mov["down"]
+
     def collides(self, rect):
         collisionindex = pygame.Rect.collidelist(rect, self.collidables)
         if collisionindex == -1:

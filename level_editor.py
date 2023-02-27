@@ -22,17 +22,19 @@ class Editor(TileMap):
         self.categoryimg = pygame.image.load(f"Assets/{self.current_category}.png")
         self.all_blocks_pages = []
         self.all_images_pages = []
-        self.camerapos = [0,0]
         self.opacity = True
         self.clicked = False
-        self.hoverables = [[pygame.image.load("Assets/opacity_hover.png"), (221,295,226,241)],
+        self.changespawn = False
+        self.hoverables = [[pygame.image.load("Assets/opacity_hover.png"), (221,289,226,238)],
         [pygame.image.load("Assets/remove_hover.png"), (141,180,241,253)],
         [pygame.image.load("Assets/clear_hover.png"), (184,210,241,253)],
         [pygame.image.load("Assets/uncheck_hover.png"), (121,132,251,262)],
         [pygame.image.load("Assets/check_hover.png"), (199,210,258,269)],
         [pygame.image.load("Assets/save_hover.png"),(448,473,248,260)],
-        [pygame.image.load("Assets/exit_hover.png"),(448,473,262,274)]
+        [pygame.image.load("Assets/exit_hover.png"),(448,473,262,274)],
+        [pygame.image.load("Assets/changespawn_hover.png"), (221,287,241,253)]
         ]
+        self.origincross = pygame.image.load("Assets/origin_cross.png")
 
         self.options = {
             "addlayer": {
@@ -165,6 +167,7 @@ class Editor(TileMap):
         if self.mouseaction[0] and (6 <= self.mousepos[0] <= 54 and 41 <= self.mousepos[1] <= 218): 
             selected_block = None
             selected_block_type = None
+            self.changespawn = False
             for pos in self.blocks_interactables[self.current_page]:
                 if self.blocks_interactables[self.current_page][pos][2].collidepoint(self.mousepos):
                     selected_block = self.blocks_interactables[self.current_page][pos][1]
@@ -342,20 +345,10 @@ class Editor(TileMap):
 
     ###################################################   OTHERS   ###################################################
 
-   
-    def movecamera(self, mov):
-        if mov["right"]:
-            self.camerapos[0] += 0.5
-        if mov["left"]:
-            self.camerapos[0] -= 0.5
-        if mov["up"]:
-            self.camerapos[1] -= 0.5
-        if mov["down"]:
-            self.camerapos[1] += 0.5
 
     def toggle_opacity(self):
         if self.mouseaction[0] == 1 and not self.clicked:
-            if 221 <= self.mousepos[0] <= 295 and 226 <= self.mousepos[1] <= 241:
+            if 221 <= self.mousepos[0] <= 289 and 226 <= self.mousepos[1] <= 238:
                 self.opacity = not self.opacity
 
     def category_changer(self):
@@ -369,6 +362,25 @@ class Editor(TileMap):
                     self.current_category = "Images"
                     self.categoryimg = pygame.image.load("Assets/Images.png")
                     print("Loaded TITLE: Images")
+    
+    def changespawnb(self):
+        if self.mouseaction[0] == 1 and not self.clicked:
+            if 221 <= self.mousepos[0] <= 287 and 241 <= self.mousepos[1] <= 253:
+                self.changespawn = not self.changespawn
+                self.selected_block = None
+                self.selected_block_type = None
+
+        if self.changespawn and 60 <= self.mousepos[0] <= 440 and 0 <= self.mousepos[1] <= 220:
+            self.editormap.blit(self.origincross, (self.mousepos[0] - self.mousepos[0]%10 , self.mousepos[1] - self.mousepos[1]%10))
+
+
+        if self.changespawn and self.mouseaction[0] and not self.clicked and 60 <= self.mousepos[0] <= 440 and 0 <= self.mousepos[1] <= 220:
+            x = (self.mousepos[0]-60)
+            y = (self.mousepos[1])
+            x = (x - x % self.tile_size) / self.tile_size + self.camerapos[0] * self.all_layers[str(self.current_layer)]["layerspeed"]
+            y = (y - y % self.tile_size) / self.tile_size + self.camerapos[1] * self.all_layers[str(self.current_layer)]["layerspeed"]
+
+            self.basecamerapos = [x-19,y-11]
 
 
     ###################################################   HANDLERS   ###################################################
@@ -410,6 +422,7 @@ class Editor(TileMap):
         self.category_changer()
         self.exitb()
         self.saveb()
+        self.changespawnb()
         self.click_handler()
         self.hover_handler()
 
