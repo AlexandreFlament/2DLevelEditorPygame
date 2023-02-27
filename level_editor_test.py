@@ -27,7 +27,7 @@ def main():
         keys["Wheel"] = 0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                ed.save_map(ed.loaded_map)
+                #ed.save_map(ed.loaded_map)
                 pygame.quit()
                 sys.exit()
             if event.type == KEYDOWN:

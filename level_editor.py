@@ -177,6 +177,7 @@ class Editor(TileMap):
     
     def mouse_block_interaction(self):
         layerspeed = self.all_layers[str(self.current_layer)]["layerspeed"]
+
         x = (self.mousepos[0]-60)
         y = (self.mousepos[1])
         x = (x - x % self.tile_size) / self.tile_size + self.camerapos[0] * self.all_layers[str(self.current_layer)]["layerspeed"]

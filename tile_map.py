@@ -71,8 +71,8 @@ class TileMap():
                     addedlayerspeedy = - (tile["pos"][1] / 2 * self.tile_size)
 
                 if self.all_layers[str(layer)]["layerspeed"] == 0:
-                    x = tile["pos"][0]
-                    y = tile["pos"][1]
+                    x = tile["pos"][0] * self.tile_size
+                    y = tile["pos"][1] * self.tile_size
                 else:
                     x = (tile["pos"][0] - playerpos[0]) * self.tile_size * self.all_layers[str(layer)]["layerspeed"] + addedlayerspeedx
                     y = (tile["pos"][1] - playerpos[1]) * self.tile_size * self.all_layers[str(layer)]["layerspeed"] + addedlayerspeedy
@@ -119,7 +119,7 @@ class TileMap():
         self.tile_map[str(layer)][str(pos[0])+";"+str(pos[1])] = {"type": type, "pos": list(pos), "layer": layer}
 
         if str(layer) not in self.all_layers:
-            self.add_layer(layer)
+            self.add_layer(layer, 1.0)
 
         return True
 
@@ -129,6 +129,7 @@ class TileMap():
         
         self.all_layers[str(layer)] = {"layerspeed":layerspeed}
         self.tile_map[str(layer)] = {}
+        print(f"Add | Layer: {layer} | Layer speed: {layerspeed}")
 
         return True
     
@@ -148,6 +149,8 @@ class TileMap():
 
         self.all_layers.remove(layer)
         del self.tile_map[str(layer)]
+
+        print(f"Remove | Layer: {layer}")
 
         return True
 
