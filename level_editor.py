@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 from tile_map import TileMap
 
 
@@ -29,7 +29,9 @@ class Editor(TileMap):
         [pygame.image.load("Assets/remove_hover.png"), (141,180,241,253)],
         [pygame.image.load("Assets/clear_hover.png"), (184,210,241,253)],
         [pygame.image.load("Assets/uncheck_hover.png"), (121,132,251,262)],
-        [pygame.image.load("Assets/check_hover.png"), (199,210,258,269)]
+        [pygame.image.load("Assets/check_hover.png"), (199,210,258,269)],
+        [pygame.image.load("Assets/save_hover.png"),(448,473,248,260)],
+        [pygame.image.load("Assets/exit_hover.png"),(448,473,262,274)]
         ]
 
         self.options = {
@@ -323,7 +325,20 @@ class Editor(TileMap):
         nb = self.options["currentlayer"]["speed"][0]
         self.editormap.blit(pygame.image.load(f"Assets/{nb[0]}.png"), (177,260))
         self.editormap.blit(pygame.image.load(f"Assets/{nb[2]}.png"), (185,260))
-             
+
+
+    ###################################################   SAVE/EXIT   ###################################################
+
+
+    def saveb(self):
+        if self.mouseaction[0] and not self.clicked and 448 <= self.mousepos[0] <= 473 and 248 <= self.mousepos[1] <= 260:
+            self.save_map(self.loaded_map)
+
+    def exitb(self):
+        if self.mouseaction[0] and not self.clicked and 448 <= self.mousepos[0] <= 473 and 262 <= self.mousepos[1] <= 274:
+            self.save_map(self.loaded_map)
+            pygame.quit()
+            sys.exit()
 
     ###################################################   OTHERS   ###################################################
 
@@ -393,6 +408,8 @@ class Editor(TileMap):
         self.addlayer(keys["Wheel"])
         self.currentlayer(keys["Wheel"])
         self.category_changer()
+        self.exitb()
+        self.saveb()
         self.click_handler()
         self.hover_handler()
 
