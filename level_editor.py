@@ -127,20 +127,25 @@ class Editor(TileMap):
 
 
     def draw_editor(self):
-        self.editormap = pygame.image.load("editor.png")
+        self.editormap = pygame.Surface((480,280))
 
         self.levelmap.fill((0,0,0))
         self.draw_map(self.levelmap, tuple(self.camerapos))
         self.editormap.blit(self.levelmap, (60, 0))
-        self.editormap.blit(self.categoryimg, (14,4))
 
         if self.current_category == "Tiles":
             self.mouse_block_interaction()
+        if self.current_category == "Images":
+            self.mouse_image_interaction()
+
+        self.editormap.blit(pygame.image.load("editor.png"),(0,0))
+        self.editormap.blit(self.categoryimg, (14,4))
+
+        if self.current_category == "Tiles":
             for pos in self.blocks_interactables[self.current_page]:
                 pygame.draw.rect(self.editormap, (255,255,255), self.blocks_interactables[self.current_page][pos][2])
                 self.editormap.blit(self.blocks_interactables[self.current_page][pos][1], self.blocks_interactables[self.current_page][pos][2])
         if self.current_category == "Images":
-            self.mouse_image_interaction()
             for pos in self.images_interactables[self.current_page]:
                 pygame.draw.rect(self.editormap, (255,255,255), self.images_interactables[self.current_page][pos][2])
                 self.editormap.blit(self.images_interactables[self.current_page][pos][1], self.images_interactables[self.current_page][pos][2])
