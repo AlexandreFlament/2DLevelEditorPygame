@@ -34,6 +34,8 @@ class TileMap():
 
         self.loaded_map = None
 
+        self.pixelfont = pygame.font.Font("PixelFont.ttf", 15)
+
     def load_map(self, path):
         with open(path, 'r') as f:
             json_data = json.load(f)
@@ -99,6 +101,7 @@ class TileMap():
                     #print("Layer: ",layer," | Current pos: ",[x/10,y/10], " | Tile pos: ", tile["pos"], "| Type: ", tile["type"])  
             #print("-------------------------------")
         #print('===============================')
+        ### display.blit(self.pixelfont.render("hello", True, (255,0,0)), (50,50))
                 
     def movecamera(self, mov):
         self.camerapos[0] += mov["right"]
