@@ -14,7 +14,7 @@ class Editor(TileMap):
         super().__init__(tile_size, tiles_file, image_file)
 
         self.levelmap = pygame.Surface((380, 220))
-
+        self.ctrlclick = [[None,None], [None,None], False]
         self.selectedblock = None
         self.current_layer = 0
         self.current_page = "0"
@@ -408,6 +408,18 @@ class Editor(TileMap):
         for L in self.hoverables:
             if L[1][0] <= self.mousepos[0] <= L[1][1] and L[1][2] <= self.mousepos[1] <= L[1][3]:
                 self.editormap.blit(L[0], (L[1][0], L[1][2]))
+    
+    def ctrlclick_handler(self, lctrl):
+        if lctrl and self.mouseaction[0] and not self.clicked and 60 <= self.mousepos[0] <= 440 and 0 <= self.mousepos[1] <= 220:
+            self.ctrlclick[0] = self.mousepos
+            self.ctrlclick[2] = True
+        
+        if (not lctrl or not self.mouseaction) and self.ctrlclick[2] and 60 <= self.mousepos[0] <= 440 and 0 <= self.mousepos[1] <= 220:
+            self.ctrlclick[1] = self.mousepos
+            self.ctrlclick[2] = False
+            print(self.ctrlclick[0])
+            print(self.ctrlclick[1])
+            print()
 
 
     ###################################################   UPDATE   ###################################################
@@ -431,7 +443,7 @@ class Editor(TileMap):
         self.exitb()
         self.saveb()
         self.changespawnb()
+        self.ctrlclick_handler(keys["lctrl"])
         self.click_handler()
         self.hover_handler()
-
 

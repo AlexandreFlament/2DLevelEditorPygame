@@ -17,7 +17,7 @@ def main():
     display = pygame.Surface((480, 280))    
 
     clock = pygame.time.Clock()
-    keys = {"left":False,"right":False,"jump":False,"up":False,"down":False}
+    keys = {"left":0,"right":0,"jump":False,"up":0,"down":0,"lctrl":False}
 
     ed = Editor(10, "Tiles/", "Images/")
     ed.load_map("Saves/mapdemo.json")
@@ -41,6 +41,8 @@ def main():
                     keys["up"] = 0.5
                 if event.key in [K_DOWN, K_s]:
                     keys["down"] = 0.5
+                if event.key in [K_LCTRL]:
+                    keys["lctrl"] = True
             if event.type == KEYUP:
                 if event.key in [K_LEFT, K_q]:
                     keys["left"] = 0
@@ -52,6 +54,8 @@ def main():
                     keys["up"] = 0
                 if event.key in [K_DOWN, K_s]:
                     keys["down"] = 0
+                if event.key in [K_LCTRL]:
+                    keys["lctrl"] = False
             if event.type == MOUSEWHEEL:
                 keys["Wheel"]=event.y
 
