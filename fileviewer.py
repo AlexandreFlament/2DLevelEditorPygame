@@ -29,6 +29,12 @@ class FileViewer():
         self.initpos = "N/A"
         self.sizeoffile = "N/A"
 
+        self.hoverables = [[pygame.image.load("Assets/FileViewer/load_hover.png"), (6,52,6,22)],
+        [pygame.image.load("Assets/FileViewer/delete_hover.png"), (59,131,6,22)],
+        [pygame.image.load("Assets/FileViewer/clear_hover.png"), (6,66,25,41)],
+        [pygame.image.load("Assets/FileViewer/create_hover.png"), (69,144,25,41)]
+        ]
+
 
     ###################################################   DRAW FV   ###################################################
 
@@ -162,6 +168,11 @@ class FileViewer():
             self.clicked = True
         else:
             self.clicked = False
+    
+    def hover_handler(self):
+        for L in self.hoverables:
+            if L[1][0] <= self.mousepos[0] <= L[1][1] and L[1][2] <= self.mousepos[1] <= L[1][3]:
+                self.surface.blit(L[0], (L[1][0], L[1][2]))
 
 
     ###################################################   UPDATE   ###################################################
@@ -175,5 +186,6 @@ class FileViewer():
         self.files_handler(keys["wheel"])
         self.mouse_handler(window_size)
         self.click_handler()
+        self.hover_handler()
 
 fv = FileViewer("Saves/")
