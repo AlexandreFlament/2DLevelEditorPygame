@@ -20,14 +20,14 @@ def main():
     keys = {"left":0,"right":0,"jump":False,"up":0,"down":0,"lctrl":False}
 
     ed = Editor(10, "Tiles/", "Images/")
-    ed.load_map("Saves/mapdemo.json")
+    ed.load_map("Saves/mapdemo copy.json")
 
     while True:
         display.fill((0, 0, 0))
         keys["Wheel"] = 0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                #ed.save_map(ed.loaded_map)
+                ed.save_map(ed.loaded_map)
                 pygame.quit()
                 sys.exit()
             if event.type == KEYDOWN:

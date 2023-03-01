@@ -37,6 +37,7 @@ class FileViewer():
         self.surface.blit(self.fvimg, (0,0))
 
         self.draw_files()
+        self.draw_save_data()
 
     def draw_files(self):
         lenselffiles = len(self.files)
@@ -46,6 +47,24 @@ class FileViewer():
         for i in range(lenselffiles):
             txt = self.font.render(self.files[i],False,(0,0,0),(255,0,0) if self.selectedfile == self.files[i] else (255,255,255))
             self.surface.blit(txt, (8, 50+23*i))
+    
+    def draw_save_data(self):
+        
+        # BLOCKS
+        self.surface.blit(self.font.render("Nbr of", False,(0,0,0),(255,255,255)), (388,49))
+        self.surface.blit(self.font.render("blocks:", False,(0,0,0),(255,255,255)), (388,66))
+        self.surface.blit(self.font.render(self.nbblocks, False,(0,0,0),(255,255,255)), (388,83))
+
+        # LAYERS
+        self.surface.blit(self.font.render("Nbr of", False,(0,0,0),(255,255,255)), (388,110))
+        self.surface.blit(self.font.render("layers:", False,(0,0,0),(255,255,255)), (388,127))
+        self.surface.blit(self.font.render(self.nblayers, False,(0,0,0),(255,255,255)), (388,144))
+
+        # Camera pos
+        self.surface.blit(self.font.render("Base pos", False,(0,0,0),(255,255,255)), (388,171))
+        self.surface.blit(self.font.render("of cam:", False,(0,0,0),(255,255,255)), (388,188))
+        self.surface.blit(self.font.render(self.initpos, False,(0,0,0),(255,255,255)), (388,205))
+
 
 
     ###################################################   OTHERS   ###################################################
@@ -55,7 +74,7 @@ class FileViewer():
         if 3 <= self.mousepos[0] <= 382 and 46 <= self.mousepos[1] <= 277 and self.mouseaction[0]:
             y = (self.mousepos[1]-46)//23
             self.selectedfile = self.files[int(y)]
-            with open(f"Saves/{self.selectedfile}.json", 'r') as f:
+            with open(f"Saves/{self.selectedfile}", 'r') as f:
                 self.selectedfiledata = json.load(f)
             
             self.nblayers = self.nbroflayers
@@ -91,7 +110,7 @@ class FileViewer():
     def campos(self):
         if self.selectedfiledata == None:
             return "N/A"
-        return str(self.selectedfiledata["camera_pos"][0]) + ", " + str(self.selectedfiledata["camera_pos"][1])
+        return str(int(self.selectedfiledata["camera_pos"][0])) + ", " + str(int(self.selectedfiledata["camera_pos"][1]))
 
 
     ###################################################   HANDLERS   ###################################################
