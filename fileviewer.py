@@ -1,4 +1,5 @@
-import pygame,os, json
+import pygame,os, json, level_editor_test
+from pygame.locals import *
 pygame.init()
 
 def scale_mouse_pos(screen_size):
@@ -14,6 +15,10 @@ class FileViewer():
         self.mousepos = [-1,-1]
         self.mouseaction = [False, False]
         self.clicked = False
+
+        self.naming = False
+        self.name = ""
+        self.inputactive = False
 
         self.file = file
         self.files = os.listdir(file)
@@ -77,11 +82,75 @@ class FileViewer():
         self.surface.blit(self.font.render(self.sizeoffile, False,(0,0,0),(255,255,255)), (388,249))
 
 
+    ###################################################   BUTTONS   ###################################################
+
+
+    def deletef(self):
+        if 59 <= self.mousepos[0] <= 131 and 6 <= self.mousepos[1] <= 22 and self.mouseaction[0] and self.selectedfile != None and not self.clicked:
+            os.remove(f"Saves/{self.selectedfile}")
+            self.files.remove(self.selectedfile)
+            self.nblayers = "N/A"
+            self.nbblocks = "N/A"
+            self.initpos = "N/A"
+            self.sizeoffile = "N/A"
+
+    def clearf(self):
+        if 6 <= self.mousepos[0] <= 66 and 25 <= self.mousepos[1] <= 41 and self.mouseaction[0] and self.selectedfile != None and not self.clicked:
+            with open(f"Saves/{self.selectedfile}", 'w') as f:
+                json.dump({"map": {"0": {}}, "all_layers": {"0": {"layerspeed": 1.0}}, "camera_pos": [0, 0]}, f)
+            self.nblayers = "1"
+            self.nbblocks = "0"
+            self.initpos = "0, 0"
+            self.sizeoffile = self.filesize
+    
+    def loadf(self):
+        if self.nbblocks == "N/A" or self.nblayers == "N/A" or self.initpos == "N/A" or self.sizeoffile == "N/A" or self.nbblocks == "ERR" or self.nblayers == "ERR" or self.initpos == "ERR" or self.sizeoffile == "ERR" or self.selectedfile == None:
+            return
+        
+        if 6 <= self.mousepos[0] <= 56 and 6 <= self.mousepos[1] <= 22 and self.mouseaction[0] and not self.clicked:
+            level_editor_test.main(f"Saves/{self.selectedfile}")
+
+    def createf(self, unicode): # 6 22 | popup
+        if (69 <= self.mousepos[0] <= 144 and 25 <= self.mousepos[1] <= 41 and self.mouseaction[0] and not self.clicked) or self.naming:
+            self.naming = True
+
+            popupsurface = pygame.Surface((108,40))
+            popup = pygame.image.load("Assets/FileViewer/create_popup.png")
+
+            popupsurface.blit(popup,(0,0))
+            popupsurface.blit(self.font.render(self.name,False,(0,0,0)), (5,22))
+            self.surface.blit(popupsurface, (186,90))
+
+            if unicode == '\b':
+                self.name = self.name[:-1]
+            elif unicode == '\r' and self.name+".json" not in self.files:
+                self.naming = False
+            elif type(unicode) != str:
+                self.inputactive = False
+            elif unicode in "azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN0123456789" and len(self.name) < 9 and not self.inputactive:
+                self.name += unicode
+                self.inputactive = True
+
+            if self.name != "" and not self.naming:
+                with open("Saves/"+self.name+".json", 'w') as f:
+                    json.dump({"map": {"0": {}}, "all_layers": {"0": {"layerspeed": 1.0}}, "camera_pos": [0, 0]}, f)
+
+                self.files = [self.name+".json"] + self.files
+                self.selectedfile = self.name+".json"
+
+                self.nblayers = "1"
+                self.nbblocks = "0"
+                self.initpos = "0, 0"
+                self.sizeoffile = self.filesize
+
+                self.name = ""
+
+
     ###################################################   OTHERS   ###################################################
 
 
     def choosefile(self):
-        if 3 <= self.mousepos[0] <= 382 and 46 <= self.mousepos[1] <= 277 and self.mouseaction[0]:
+        if 3 <= self.mousepos[0] <= 382 and 46 <= self.mousepos[1] <= 277 and self.mouseaction[0] and not self.clicked:
             y = (self.mousepos[1]-46)//23
             self.selectedfile = self.files[int(y)]
             with open(f"Saves/{self.selectedfile}", 'r') as f:
@@ -179,12 +248,21 @@ class FileViewer():
 
 
     def update(self, window_size, keys):
+        self.mouse_handler(window_size)
+
         self.draw()
 
-        self.choosefile()
+        if not self.naming:
+            self.deletef()
+            self.clearf()
+            self.loadf()
+            self.createf(keys["unicode"])
+
+            self.choosefile()
+        else:
+            self.createf(keys["unicode"])
 
         self.files_handler(keys["wheel"])
-        self.mouse_handler(window_size)
         self.click_handler()
         self.hover_handler()
 
