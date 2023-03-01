@@ -79,7 +79,10 @@ class FileViewer():
             y = (self.mousepos[1]-46)//23
             self.selectedfile = self.files[int(y)]
             with open(f"Saves/{self.selectedfile}", 'r') as f:
-                self.selectedfiledata = json.load(f)
+                try:
+                    self.selectedfiledata = json.load(f)
+                except:
+                    self.selectedfiledata = {}
             
             self.nblayers = self.nbroflayers
             self.nbblocks = self.nbrofblcks
@@ -102,25 +105,39 @@ class FileViewer():
         if self.selectedfiledata == None:
             return "N/A"
         ln = 0
-        for lyer in self.selectedfiledata["map"]:
-            ln += len(self.selectedfiledata["map"][lyer])
-        return str(ln)
+        try:
+            for lyer in self.selectedfiledata["map"]:
+                ln += len(self.selectedfiledata["map"][lyer])
+            return str(ln)
+        except:
+            return "ERR"
     
     @property
     def nbroflayers(self):
         if self.selectedfiledata == None:
             return "N/A"
-        return str(len(self.selectedfiledata["all_layers"]))
-    
+        try:
+            return str(len(self.selectedfiledata["all_layers"]))
+        except:
+            return "ERR"
+        
     @property
     def campos(self):
         if self.selectedfiledata == None:
             return "N/A"
-        return str(int(self.selectedfiledata["camera_pos"][0])) + ", " + str(int(self.selectedfiledata["camera_pos"][1]))
-
+        try:
+            return str(int(self.selectedfiledata["camera_pos"][0])) + ", " + str(int(self.selectedfiledata["camera_pos"][1]))
+        except:
+            return "ERR"
+        
     @property
     def filesize(self):
-        size = int(os.stat(f"Saves/{self.selectedfile}").st_size)
+        if self.selectedfile == None:
+            return "N/A"
+        try:
+            size = int(os.stat(f"Saves/{self.selectedfile}").st_size)
+        except:
+            return "ERR"
         for x in ['B', 'KB', 'MB']:
             if size < 1024:
                 return str(int(size))+" "+x
