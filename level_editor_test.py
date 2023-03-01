@@ -2,7 +2,7 @@ import pygame, sys
 from level_editor import Editor
 from pygame.locals import *
 
-def main():
+def main(maptoload):
 
     #Music
     pygame.mixer.pre_init(44100, -16, 2, 4096)
@@ -20,7 +20,7 @@ def main():
     keys = {"left":0,"right":0,"jump":False,"up":0,"down":0,"lctrl":False}
 
     ed = Editor(10, "Tiles/", "Images/")
-    ed.load_map("Saves/mapdemo copy.json")
+    ed.load_map(maptoload)
 
     while True:
         display.fill((0, 0, 0))
@@ -64,5 +64,3 @@ def main():
         screen.blit(pygame.transform.scale(ed.editormap, pygame.display.get_window_size()), (0,0))
         pygame.display.update()
         clock.tick(60)
-
-main()
