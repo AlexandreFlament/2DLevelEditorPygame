@@ -27,6 +27,7 @@ class FileViewer():
         self.nblayers = "N/A"
         self.nbblocks = "N/A"
         self.initpos = "N/A"
+        self.sizeoffile = "N/A"
 
 
     ###################################################   DRAW FV   ###################################################
@@ -65,6 +66,9 @@ class FileViewer():
         self.surface.blit(self.font.render("of cam:", False,(0,0,0),(255,255,255)), (388,188))
         self.surface.blit(self.font.render(self.initpos, False,(0,0,0),(255,255,255)), (388,205))
 
+        # File size
+        self.surface.blit(self.font.render("Size:", False,(0,0,0),(255,255,255)), (388,232))
+        self.surface.blit(self.font.render(self.sizeoffile, False,(0,0,0),(255,255,255)), (388,249))
 
 
     ###################################################   OTHERS   ###################################################
@@ -80,6 +84,7 @@ class FileViewer():
             self.nblayers = self.nbroflayers
             self.nbblocks = self.nbrofblcks
             self.initpos = self.campos
+            self.sizeoffile = self.filesize
 
         if self.mouseaction[1]:
             self.selectedfile = None
@@ -87,6 +92,7 @@ class FileViewer():
             self.nblayers = "N/A"
             self.nbblocks = "N/A"
             self.initpos = "N/A"
+            self.sizeoffile = "N/A"
 
 
     ###################################################   SAVESDATA   ###################################################
@@ -111,6 +117,14 @@ class FileViewer():
         if self.selectedfiledata == None:
             return "N/A"
         return str(int(self.selectedfiledata["camera_pos"][0])) + ", " + str(int(self.selectedfiledata["camera_pos"][1]))
+
+    @property
+    def filesize(self):
+        size = int(os.stat(f"Saves/{self.selectedfile}").st_size)
+        for x in ['B', 'KB', 'MB']:
+            if size < 1024:
+                return str(int(size))+" "+x
+            size /= 1024
 
 
     ###################################################   HANDLERS   ###################################################
