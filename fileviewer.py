@@ -119,7 +119,7 @@ class FileViewer():
 
             popupsurface.blit(popup,(0,0))
             popupsurface.blit(self.font.render(self.name,False,(0,0,0)), (5,22))
-            self.surface.blit(popupsurface, (186,90))
+            self.surface.blit(popupsurface, (186,110))
 
             if unicode == '\b':
                 self.name = self.name[:-1]
