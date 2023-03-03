@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame
 from fileviewer import FileViewer
 from pygame.locals import *
 
@@ -22,15 +22,13 @@ def main():
     clock = pygame.time.Clock()
     keys = {"left":False,"right":False,"jump":False,"up":False,"down":False,"wheel":0,"unicode":None}
 
-
-    while True:
+    while fv.running:
         display.fill((0, 0, 0))
         keys["wheel"] = 0
         keys["unicode"] = None
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                fv.running = False
             if event.type == KEYDOWN:
                 if event.key in [K_LEFT, K_q]:
                     keys["left"] = True

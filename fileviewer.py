@@ -11,6 +11,7 @@ def scale_mouse_pos(screen_size):
 class FileViewer():
 
     def __init__(self,file):
+        self.running = True
 
         self.mousepos = [-1,-1]
         self.mouseaction = [False, False]

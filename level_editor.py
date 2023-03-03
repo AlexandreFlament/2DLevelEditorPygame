@@ -13,6 +13,7 @@ class Editor(TileMap):
     def __init__(self, tile_size, tiles_file, image_file):
         super().__init__(tile_size, tiles_file, image_file)
 
+        self.running = True
         self.levelmap = pygame.Surface((380, 220))
         self.ctrlclick = [[None,None], [None,None], False]
         self.selectedblock = None
@@ -346,8 +347,7 @@ class Editor(TileMap):
     def exitb(self):
         if self.mouseaction[0] and not self.clicked and 448 <= self.mousepos[0] <= 473 and 262 <= self.mousepos[1] <= 274:
             self.save_map(self.loaded_map)
-            pygame.quit()
-            sys.exit()
+            self.running = False
 
     ###################################################   OTHERS   ###################################################
 

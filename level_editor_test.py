@@ -22,14 +22,13 @@ def main(maptoload):
     ed = Editor(10, "Tiles/", "Images/")
     ed.load_map(maptoload)
 
-    while True:
+    while ed.running:
         display.fill((0, 0, 0))
         keys["Wheel"] = 0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 ed.save_map(ed.loaded_map)
-                pygame.quit()
-                sys.exit()
+                ed.running = False
             if event.type == KEYDOWN:
                 if event.key in [K_LEFT, K_q]:
                     keys["left"] = 0.5
