@@ -23,7 +23,7 @@ class FileViewer():
 
         self.file = file
         self.files = os.listdir(file)
-        self.initfstfile = self.files[0] 
+        self.fst_lst_vals = [self.files[0], self.files[-1]]
 
         self.font = pygame.font.Font("PixelFont.ttf", 15)
         self.fvimg = pygame.image.load("fileviewer.png")
@@ -224,9 +224,18 @@ class FileViewer():
 
 
     def files_handler(self,wheel):
-        if wheel>0:
+        lenf = 0
+        if len(self.files)>10:
+            lenf = 9
+        else:
+            len(self.files)
+        
+        if lenf < 9:
+            return
+
+        if wheel>0 and self.files[0] != self.fst_lst_vals[0]:
             self.files = [self.files[-1]] + self.files[0:-1]
-        if wheel<0:
+        if wheel<0 and self.files[lenf] != self.fst_lst_vals[1]:
             self.files = self.files[1:] + [self.files[0]]
 
     def mouse_handler(self, screen_size):
