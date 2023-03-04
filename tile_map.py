@@ -13,6 +13,8 @@ class TileMap():
 
     def __init__(self, tile_size, tiles_file, image_file):
 
+        self.running = True
+
         self.tile_size = tile_size
         self.nbr_x_tiles = 380/self.tile_size
         self.nbr_y_tiles = 220/self.tile_size

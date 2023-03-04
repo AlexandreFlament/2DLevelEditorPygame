@@ -28,7 +28,7 @@ def main():
     keys = {"left":False,"right":False,"jump":False,"up":False,"down":False}
 
 
-    while True:
+    while Map.running:
         display.fill((0, 0, 0))
         
         Map.draw_map(display, playerpos)
@@ -40,8 +40,7 @@ def main():
         #display.blit(mouse_tile, (pygame.mouse.get_pos()[0]/(x_screen_size/320), pygame.mouse.get_pos()[1]/(y_screen_size/240)))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+                Map.running = False
             if event.type == KEYDOWN:
                 if event.key in [K_LEFT, K_q]:
                     keys["left"] = True
