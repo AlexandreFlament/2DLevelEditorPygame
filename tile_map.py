@@ -15,6 +15,8 @@ class TileMap():
 
         self.running = True
 
+        self.font = pygame.font.Font("PixelFont.ttf",20)
+
         self.tile_size = tile_size
         self.nbr_x_tiles = 380/self.tile_size
         self.nbr_y_tiles = 220/self.tile_size
@@ -33,7 +35,7 @@ class TileMap():
         self.current_layer = None
         
         self.wasteddowhat = " "
-        self.wastedopacity = 0
+        self.wastedcircleradius = 0
         self.wastedimage = pygame.image.load("Assets/wasted.png")
 
         self.camerapos = [0,0]
@@ -110,12 +112,14 @@ class TileMap():
         #print('===============================')
         ### display.blit(self.pixelfont.render("hello", True, (255,0,0)), (50,50))
 
-        if self.wasteddowhat == "-" and self.wastedopacity >=0:
-            self.wastedopacity -= 10
-        if self.wasteddowhat == "+" and self.wastedopacity <= 260:
-            self.wastedopacity += 10
-
-        blit_alpha(display, self.wastedimage, (0,0), self.wastedopacity)
+        if self.wasteddowhat == "-" and self.wastedcircleradius >=0:
+            self.wastedcircleradius -= 20
+        if self.wasteddowhat == "+" and self.wastedcircleradius <= 260:
+            self.wastedcircleradius += 20
+        
+        if self.wastedcircleradius>0:
+            pygame.draw.circle(display, (0,0,0), (190, 110), self.wastedcircleradius)
+            display.blit(self.font.render("WASTED", False, (255,0,0)), (146,100))
                 
     def movecamera(self, mov):
         self.camerapos[0] += mov["right"]
