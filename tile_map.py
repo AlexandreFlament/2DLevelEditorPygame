@@ -26,10 +26,15 @@ class TileMap():
         [print("Loaded TILE:", tile) for tile in self.tiles]
         [print("Loaded MINI:", mini) for mini in self.mini]
         [print("Loaded IMAGE:", img) for img in self.images]
+
         self.tile_map = {}
         self.all_layers = {}
         self.collidables = []
         self.current_layer = None
+        
+        self.wasteddowhat = " "
+        self.wastedopacity = 0
+        self.wastedimage = pygame.image.load("Assets/wasted.png")
 
         self.camerapos = [0,0]
         self.basecamerapos = None
@@ -104,6 +109,13 @@ class TileMap():
             #print("-------------------------------")
         #print('===============================')
         ### display.blit(self.pixelfont.render("hello", True, (255,0,0)), (50,50))
+
+        if self.wasteddowhat == "-" and self.wastedopacity >=0:
+            self.wastedopacity -= 10
+        if self.wasteddowhat == "+" and self.wastedopacity <= 260:
+            self.wastedopacity += 10
+
+        blit_alpha(display, self.wastedimage, (0,0), self.wastedopacity)
                 
     def movecamera(self, mov):
         self.camerapos[0] += mov["right"]

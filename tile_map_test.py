@@ -52,6 +52,12 @@ def main():
                     keys["up"] = True
                 if event.key in [K_DOWN, K_s]:
                     keys["down"] = True
+                if event.key in [K_w]:
+                    Map.wasteddowhat = "+"
+                if event.key in [K_x]:
+                    Map.wasteddowhat = "-"
+                if event.key in [K_c]:
+                    Map.wasteddowhat = " "
             if event.type == KEYUP:
                 if event.key in [K_LEFT, K_q]:
                     keys["left"] = False
