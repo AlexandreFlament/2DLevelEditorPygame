@@ -88,12 +88,14 @@ class TileMap():
                     x = (tile["pos"][0] - playerpos[0]) * self.tile_size * self.all_layers[str(layer)]["layerspeed"] + addedlayerspeedx
                     y = (tile["pos"][1] - playerpos[1]) * self.tile_size * self.all_layers[str(layer)]["layerspeed"] + addedlayerspeedy
                     
-                if tile["type"] in self.tiles:
-                    toblit = self.tiles[tile["type"]]
-                if tile["type"] in self.images:
-                    toblit = self.images[tile["type"]]
-
+                    
                 if (-380 <= x <= 380 and -220 <= y <= 220 and tile["type"] in self.images) or (-10 <= x <= 380 and -10 <= y <= 220 and tile["type"] in self.tiles):
+                    
+                    if tile["type"] in self.tiles:
+                        toblit = self.tiles[tile["type"]]
+                    if tile["type"] in self.images:
+                        toblit = self.images[tile["type"]]
+
                     if self.current_layer == None or layer == int(self.current_layer):
                         display.blit(toblit, (x, y))
                     else:
