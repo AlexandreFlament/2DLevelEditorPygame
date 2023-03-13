@@ -45,6 +45,13 @@ class TileMap():
 
         self.pixelfont = pygame.font.Font("PixelFont.ttf", 15)
 
+        self.missingtexture = pygame.Surface((10,10))
+        self.missingtexture.fill((255,0,255))
+        blacksurf = pygame.Surface((5,5))
+        blacksurf.fill((0,0,0))
+        self.missingtexture.blit(blacksurf,(0,0))
+        self.missingtexture.blit(blacksurf,(5,5))
+
     def load_map(self, path):
         with open(path, 'r') as f:
             json_data = json.load(f)
@@ -89,12 +96,14 @@ class TileMap():
                     y = (tile["pos"][1] - playerpos[1]) * self.tile_size * self.all_layers[str(layer)]["layerspeed"] + addedlayerspeedy
                     
                     
-                if (-380 <= x <= 380 and -220 <= y <= 220 and tile["type"] in self.images) or (-10 <= x <= 380 and -10 <= y <= 220 and tile["type"] in self.tiles):
+                if -380 <= x <= 380 and -220 <= y <= 220:
                     
                     if tile["type"] in self.tiles:
                         toblit = self.tiles[tile["type"]]
-                    if tile["type"] in self.images:
+                    elif tile["type"] in self.images:
                         toblit = self.images[tile["type"]]
+                    else:
+                        toblit = self.missingtexture
 
                     if self.current_layer == None or layer == int(self.current_layer):
                         display.blit(toblit, (x, y))

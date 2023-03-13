@@ -20,8 +20,6 @@ def main():
     Map = TileMap(10, "Tiles/", "Images/")
     Map.load_map("Saves/mapdemo.json")
 
-    mouse_tile = pygame.image.load("Tiles/dirt_box_full.png")
-
     clock = pygame.time.Clock()
 
     playerpos = [0,0]
@@ -32,12 +30,7 @@ def main():
         display.fill((0, 0, 0))
         
         Map.draw_map(display, playerpos)
-
-        rect = mouse_tile.get_rect()
-        #rect.topleft = tuple((pygame.mouse.get_pos()[0]/(x_screen_size/320), pygame.mouse.get_pos()[1]/(y_screen_size/240)))
-        #print(Map.collides(rect, display), (pygame.mouse.get_pos()[0]/(x_screen_size/320), pygame.mouse.get_pos()[1]/(y_screen_size/240)))
-
-        #display.blit(mouse_tile, (pygame.mouse.get_pos()[0]/(x_screen_size/320), pygame.mouse.get_pos()[1]/(y_screen_size/240)))
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 Map.running = False
